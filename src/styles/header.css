@@ -1,0 +1,40 @@
+header {
+    background-color: #CFE2FF;
+}
+.container {
+    padding: 0px 50px;
+    
+}
+.header-cover {
+    height: 70px;    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header-left {
+    display: flex;
+    justify-content: space-between;
+    flex-basis: 25%;
+}
+.header-left > a{
+    color: black;
+}
+.header-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.img_user {
+    width: 50px;
+    height: 50px;
+    background-color: #F6AC31;
+    margin-right: 20px;
+    border-radius: 50%;
+}
+
+.active__menu {
+    color: white !important;
+    background-color: #3C8AFF ;
+    border-radius: 8px;
+    padding: 8px;
+}
