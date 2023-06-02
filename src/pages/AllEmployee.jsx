@@ -5,10 +5,9 @@ import List from "../components/RightComponents/List/List";
 import '../styles/allemployee.css'
 
 const AllEmployee = () => {
-
   return (
     <div className="manager">
-      <NavBar></NavBar>
+      {/* <NavBar></NavBar> */}
       <List></List>
     </div>
   );

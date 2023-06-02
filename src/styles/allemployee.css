@@ -1,3 +1,13 @@
 .manager {
     display: flex;
+    justify-content: space-between;
+    flex-basis: 75%;
+    
+}
+.nav-cover {
+    flex-basis: 20%;
+}
+.container-list {
+    /* flex-basis: 70%; */
+    width: 100%;
 }

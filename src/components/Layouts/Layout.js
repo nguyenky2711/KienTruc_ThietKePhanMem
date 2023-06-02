@@ -4,13 +4,16 @@ import Routes from '../../routes/Routers.js'
 import NavBar from '../NavBar/NavBar.jsx'
 
 const Layout = () => {
+  const role = false
+
   return (
-    <div>
-        <Header/>
-        {/* <NavBar></NavBar> */}
-        <div>
-            <Routes/>
-        </div>
+    <div style={role ? {} : { display: 'flex', justifyContent: 'space-between' }}>
+      {
+        role ? <Header /> : <NavBar />
+      }
+
+      <Routes />
+
     </div>
   )
 }

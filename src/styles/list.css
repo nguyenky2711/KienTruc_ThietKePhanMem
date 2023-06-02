@@ -1,0 +1,138 @@
+.searchTilte {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.searchbar {
+  padding: 7px;
+  border: 1px solid #212245;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* position: relative; */
+  cursor: pointer;
+}
+.searchbar input {
+  background: transparent;
+  border: none;
+  outline: none;
+}
+.list-cover {
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 8px;
+}
+.header-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header-list button {
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid white;
+  margin: 0px 5px;
+}
+.addBtn {
+  background-color: #2f80ed;
+}
+.removeBtn {
+  background-color: #eb5757;
+}
+.body-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.list-item {
+  /* flex-basis: 35%; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
+  box-sizing: border-box;
+  outline: none;
+  transition: outline 0.3s;
+  margin-bottom: 15px;
+}
+.list-item:hover {
+  /* outline: 1px solid #212245; */
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+/* .list-item > img {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+} */
+.item-content {
+  display: flex;
+}
+.item-content svg {
+  padding: 10px;
+}
+
+.form-cover {
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 8px;
+}
+.staff-infor {
+  display: flex;
+  justify-content: space-between;
+}
+.infor {
+  /* flex-basis: 85%; */
+  padding-left: 20px;
+  width: 100%;
+}
+.infor > form {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.infor-item {
+  flex-basis: 45%;
+  /* width: 100%; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0px;
+}
+.infor-item > input,
+select {
+  height: 20px;
+  border-radius: 8px;
+  flex-basis: 50%;
+}
+.infor-item > select {
+  flex-basis: 52%;
+  margin: 0px;
+}
+.infor-item > button {
+  margin-left: 35%;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table > tbody > tr > td {
+  text-align: center;
+}
+.buttons {
+  text-align: center;
+}
+.buttons > button {
+  padding: 8px 12px;
+  border: 1px solid #3B8AFF;
+  background-color: #3B8AFF;
+  color: white;
+  margin: 10px;
+  border-radius: 8px;
+}

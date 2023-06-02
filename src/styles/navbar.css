@@ -1,5 +1,5 @@
 .nav-cover {
-    width: 184px;
+    /* width: 184px; */
     /* height: 100%; */
     display: flex;
     flex-direction: column;
@@ -23,11 +23,15 @@
     padding: 20px 15px;
 }
 .user {
+    width: 87%;
     display: flex;
     justify-content: space-between;
     padding: 15px 15px;
     background-color: #3B8AFF;
 
+}
+.user-name {
+    padding: 0px 20px;
 }
 .user >img {
     border-radius: 50%;
@@ -35,4 +39,8 @@
 }
 .user > p {
     color: white;
+}
+.active__btn {
+    color: #3B8AFF !important;
+    border-left: 20px solid #3B8AFF;
 }

@@ -23,7 +23,7 @@ const Home = () => {
   return (
     
     <div className="container">
-      <Header></Header>
+      
       <div className="navbar">
         {/* <a href="">Quẹt thẻ vào</a>
         <a href="">Quẹt thẻ ra</a> */}
