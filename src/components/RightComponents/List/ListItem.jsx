@@ -2,29 +2,29 @@ import React from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
-const ListItem = (props) => {
-  const category = props.category;
+const ListItem = ({item,activateRemoveBtn,category,onClick}) => {
+  // const category = category;
   return category === "employee" ? (
     <div
       className="list-item"
       style={{ flexBasis: "35%" }}
-      onClick={props.onClick}
+      onClick={onClick}
     >
       <img
-        src={props.item.staffImg}
+        src={item.staffImg}
         alt=""
         style={{ width: "65px", height: "65px", borderRadius: "50%" }}
       />
       <div className="item-content">
         <div>
           <p>
-            Họ và tên: <span>{props.item.staffName}</span>
+            Họ và tên: <span>{item.staffName}</span>
           </p>
           <p>
-            Mã nhân viên: <span>{props.item.staffId}</span>
+            Mã nhân viên: <span>{item.staffId}</span>
           </p>
         </div>
-        <div style={props.activateRemoveBtn ? { opacity: 1 } : { opacity: 0 }}>
+        <div style={activateRemoveBtn ? { opacity: 1 } : { opacity: 0 }}>
           <FontAwesomeIcon icon={faXmark} />
         </div>
       </div>
@@ -34,14 +34,14 @@ const ListItem = (props) => {
       className="list-item"
       style={{ flexBasis: "18%", flexDirection: "column" }}
     >
-      <img src={props.item.cameraImg} alt="" />
+    <img src={item.cameraImg} alt="" />
       <div className="item-content">
         <div>
           <p style={{ margin: "0px" }}>
-            <span>{props.item.cameraName}</span>
+            <span>{item.cameraName}</span>
           </p>
           <p style={{ margin: "0px" }}>
-            <span>{props.item.cameraPosition}</span>
+            <span>{item.cameraPosition}</span>
           </p>
         </div>
       </div>
@@ -51,7 +51,7 @@ const ListItem = (props) => {
   ) : category === "park" ? (
     <div
       className="list-item"
-      onClick={props.onClick}
+      onClick={onClick}
       style={{ flexBasis: "22%", flexDirection: "column" }}
     >
       <div className="item-content">
@@ -67,27 +67,27 @@ const ListItem = (props) => {
               marginBottom: "15px",
             }}
           >
-            {props.item.parkName}
+            {item.parkName}
           </h1>
           <p style={{ margin: "0px", fontWeight: "600" }}>
-            <span>Bãi {props.item.parkName}</span>
+            <span>Bãi {item.parkName}</span>
           </p>
           <p style={{ margin: "0px" }}>
             Sức chứa:
             <span style={{ color: "#0049B5", fontWeight: "600" }}>
-              {" " + props.item.parkCapacity}
+              {" " + item.parkCapacity}
             </span>
           </p>
           <p style={{ margin: "0px" }}>
             Tình trạng:
             <span
               style={
-                props.item.parkEmpty > 0
+                item.parkEmpty > 0
                   ? { color: "#00CD2D", fontWeight: "600" }
                   : { color: "#FF0303", fontWeight: "600" }
               }
             >
-              {props.item.parkEmpty > 0 ? " Còn trống" : " Hết chỗ"}
+              {item.parkEmpty > 0 ? " Còn trống" : " Hết chỗ"}
             </span>
           </p>
         </div>

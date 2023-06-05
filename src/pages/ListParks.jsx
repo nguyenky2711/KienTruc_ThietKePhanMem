@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
+
 import SearchTitle from "../components/RightComponents/List/SearchTitle";
 import HeaderList from "../components/RightComponents/List/HeaderList";
 import ListItem from "../components/RightComponents/List/ListItem";
 import { Table } from "reactstrap";
 import { Button, Form, FormGroup, Label, Input, FormText } from "reactstrap";
+
+import ParkDetail from "./ParkDetail";
 const ListParks = () => {
   const typeData = [
     {
@@ -80,12 +83,14 @@ const ListParks = () => {
     parkCostHire: 0,
   });
   const [itemSelected, setItemSelected] = useState({});
-  const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [disableInput, setDisableInput] = useState(true);
   const [addForm, setAddForm] = useState(false);
   const [form, setForm] = useState(false);
   const handleAdd = () => {
     setAddForm(true);
+  };
+
+  const handleBackClick = () => {
+    setForm(false);
   };
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -93,148 +98,42 @@ const ListParks = () => {
       ...prevData,
       [name]: value,
       parkEmpty: prevData.parkCapacity - prevData.parkContained,
-
     }));
   };
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    if (!disableInput) {
-      setItemSelected((prevItem) => ({
-        ...prevItem,
-        [name]: value,
-        parkEmpty: prevItem.parkCapacity - prevItem.parkContained,
-      }));
-    }    
+  const create_park = (newParkdata) => {
+    // xử lý thêm
+
+    console.log(newParkdata);
+    // setAddForm(false);
   };
-  const handleSubmitForm = (e) => {
-    e.preventDefault();
-    setData((prevData) => prevData.concat(newParkdata));
-    setAddForm(false);
-  };
-  const handleDeletePark = (parkID) => {
-    // console.log(123)
-    // setData((prevData) => prevData.filter((item) => item.parkID !== parkID))
-  };
-  const handleChangePark = (e) => {
-    console.log(itemSelected);
-    if (selectedIndex !== -1) {
-      const newData = [...data];
-      newData[selectedIndex] = itemSelected;
-      setData(newData);
-    }
-    setDisableInput(true);
-    setForm(false);
-  };
+
   const handleSelectedItem = (item, index) => {
     setItemSelected(item);
-    setSelectedIndex(index);
+    setItemSelected((preData) => ({
+      ...preData,
+      index: index,
+    }));
     setForm(true);
   };
   useEffect(() => {
-    setItemSelected((prevItem) => ({
-      ...prevItem,
-      parkEmpty: prevItem.parkCapacity - prevItem.parkContained,
-    }));
-  }, [addForm, form, itemSelected]);
+    // setItemSelected((prevItem) => ({
+    //   ...prevItem,
+    //   parkEmpty: prevItem.parkCapacity - prevItem.parkContained,
+    // }));
+  }, [addForm, form, itemSelected, data]);
   return (
     <div style={{ flexBasis: "75%" }}>
       <SearchTitle title={"Quản lý bãi xe"} search={true} />
 
       {form ? (
-        <div className="form-cover">
-          <h1>Thông tin bãi xe</h1>
-          <div className="staff-infor">
-            <div className="infor">
-            <Form className="">
-                <FormGroup className="infor-item">
-                  <Label for="exampleText">Tên bãi giữ xe</Label>
-                  <Input
-                    type="text"
-                    name="parkName"
-                    id="exampleText"
-                    onChange={handleInputChange}
-                    value={itemSelected.parkName}
-                    disabled={disableInput}
-                  />
-                </FormGroup>
-                <FormGroup className="infor-item">
-                  <Label for="exampleText">Sức chứa tối đa</Label>
-                  <Input
-                    type="number"
-                    name="parkCapacity"
-                    id="exampleText"
-                    onChange={handleInputChange}
-                    value={itemSelected.parkCapacity}
-                    disabled={disableInput}
-                  />
-                </FormGroup>
-                <FormGroup className="infor-item">
-                  <Label for="exampleText">Mã bãi</Label>
-                  <Input
-                    type="text"
-                    name="parkID"
-                    id="exampleText"
-                    onChange={handleInputChange}
-                    value={itemSelected.parkID}
-                    disabled={disableInput}
-                  />
-                </FormGroup>
-                <FormGroup className="infor-item">
-                  <Label for="exampleText">Đã chứa</Label>
-                  <Input
-                    type="number"
-                    name="parkContained"
-                    id="exampleText"
-                    onChange={handleInputChange}
-                    value={itemSelected.parkContained}
-                    disabled={disableInput}
-                  />
-                </FormGroup>
-                <FormGroup className="infor-item">
-                  <Label for="exampleText">Giá thuê bãi/ngày</Label>
-                  <Input
-                    type="number"
-                    name="parkCostHire"
-                    id="exampleText"
-                    onChange={handleInputChange}
-                    value={itemSelected.parkCostHire}
-                    disabled={disableInput}
-                  />
-                </FormGroup>
-                <FormGroup className="infor-item">
-                  <Label for="exampleText">Còn trống</Label>
-                  <Input
-                    type="number"
-                    name="parkEmpty"
-                    id="exampleText"
-                    onChange={handleInputChange}
-                    value={itemSelected.parkEmpty}
-                    disabled
-                  />
-                </FormGroup>
-              </Form>
-              <div className="buttons">
-                <button type="button" onClick={()=>handleDeletePark(itemSelected.parkID)}>
-                  Xoá bãi giữ xe
-                </button>
-                {disableInput ? (
-                  <button type="button" onClick={() => setDisableInput(false)}>
-                    Thay đổi thông tin bãi
-                  </button>
-                ) : (
-                  <button type="button" onClick={handleChangePark}>
-                    Lưu thay đổi
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>         
-        </div>
+        <ParkDetail
+          item={itemSelected}
+          onBackClick={handleBackClick}
+        ></ParkDetail>
       ) : addForm ? (
         <div className="form-cover">
           <h1>Thêm chi phí</h1>
           <div className="staff-infor">
-            {/* <img src={`https://picsum.photos/id/${id}/65/65`} alt="" /> */}
             <div className="infor">
               <Form className="">
                 <FormGroup className="infor-item">
@@ -294,14 +193,12 @@ const ListParks = () => {
                 </FormGroup>
               </Form>
               <div className="buttons">
-                <button type="button" onClick={handleSubmitForm}>
-                  Thêm chi phí
+                <button type="button" onClick={() => create_park(newParkdata)}>
+                  Thêm bãi xe
                 </button>
-                {/* <button type="button" onClick={deleteCost}>Xoá chi phí</button> */}
               </div>
             </div>
           </div>
-          {/* <button onClick={formOn}>{!formStatus? ('Thay đổi thông tin'):('Lưu thông tin')} </button> */}
         </div>
       ) : (
         <div className="list-cover">
@@ -312,14 +209,20 @@ const ListParks = () => {
             removeBtn_on={false}
             addBtn_on={true}
           />
-          <div className="body-list" style={{display:'grid', gridTemplateColumns:'auto auto auto auto'}}>
+          <div
+            className="body-list"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "auto auto auto auto",
+            }}
+          >
             {data.map((item, index) => {
               return (
                 <ListItem
                   item={item}
                   activateRemoveBtn={false}
                   category={"park"}
-                  onClick={()=>handleSelectedItem(item,index)}
+                  onClick={() => handleSelectedItem(item, index)}
                 ></ListItem>
               );
             })}

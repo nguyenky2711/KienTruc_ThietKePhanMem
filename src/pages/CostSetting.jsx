@@ -4,6 +4,7 @@ import HeaderList from "../components/RightComponents/List/HeaderList";
 import ListItem from "../components/RightComponents/List/ListItem";
 import { Table } from "reactstrap";
 import { Button, Form, FormGroup, Label, Input, FormText } from "reactstrap";
+import CostDetail from "./CostDetail";
 
 const CostSetting = () => {
   const typeData = [
@@ -60,6 +61,8 @@ const CostSetting = () => {
   const handleAdd = () => {
     setAddForm(true);
   };
+
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setNewCostData((prevData) => ({
@@ -67,37 +70,21 @@ const CostSetting = () => {
       [name]: value,
     }));
   };
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    if (!disableInput) {
-      setItemSelected((prevItem) => ({
-        ...prevItem,
-        [name]: value,
-      }));
-    }
+  const create_cost = (newCostData) => {
+    //xử lý thêm
+    
+    console.log(newCostData)
+    // e.preventDefault();
+    // setData((prevData) => prevData.concat(newCostData));
+    // setAddForm(false);
   };
-  const handleSubmitForm = (e) => {
-    e.preventDefault();
-    // setId(id + 1);
-    setData((prevData) => prevData.concat(newCostData));
-    setAddForm(false);
-  };
-  const handleDeleteCost = (e) => {};
-  const handleChangeCost = (e) => {
-    console.log(itemSelected)
-    if(selectedIndex !== -1) {
-      const newData = [...data]
-      newData[selectedIndex] = itemSelected
-      setData(newData)
-    }
-    setDisableInput(true)
-    setForm(false)
-  };
-  console.log(data)
   const handleSelectedItem = (item,index) => {
     setItemSelected(item);
     setSelectedIndex(index)
     setForm(true);
+  };
+  const handleBackClick = () => {
+    setForm(false);
   };
   useEffect(() => {}, [addForm, form]);
   return (
@@ -105,71 +92,7 @@ const CostSetting = () => {
       <SearchTitle title={"Thiết lập chi phí"} search={true} />
 
       {form ? (
-        <div className="form-cover">
-          <h1>Thông tin chi phí</h1>
-          <div className="staff-infor">
-            <div className="infor">
-              <Form className="">
-                <FormGroup className="infor-item">
-                  <Label for="exampleText">Loại xe</Label>
-                  <Input
-                    type="select"
-                    name="type"
-                    id="exampleSelect"
-                    onChange={handleInputChange}
-                    value={itemSelected.type}
-                    disabled={disableInput}
-                  >
-                    {typeData.map((item, index) => {
-                      return <option>{item.name}</option>;
-                    })}
-                  </Input>
-                </FormGroup>
-                <FormGroup className="infor-item">
-                  <Label for="exampleText">Thời gian gửi</Label>
-                  <Input
-                    type="select"
-                    name="time"
-                    id="exampleSelect"
-                    onChange={handleInputChange}
-                    value={itemSelected.time}
-                    disabled={disableInput}
-                  >
-                    {timeData.map((item, index) => {
-                      return <option>{item.value}</option>;
-                    })}
-                  </Input>
-                </FormGroup>
-                <FormGroup className="infor-item">
-                  <Label for="exampleText">Giá tiền</Label>
-                  <Input
-                    type="number"
-                    name="price"
-                    id="exampleText"
-                    onChange={handleInputChange}
-                    value={itemSelected.price}
-                    disabled={disableInput}
-                  />
-                </FormGroup>
-              </Form>
-              <div className="buttons">
-                <button type="button" onClick={handleDeleteCost}>
-                  Xoá chi phí
-                </button>
-                {disableInput ? (
-                  <button type="button" onClick={() => setDisableInput(false)}>
-                    Thay đổi chi phí
-                  </button>
-                ) : (
-                  <button type="button" onClick={handleChangeCost}>
-                    Lưu chi phí
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-          {/* <button onClick={formOn}>{!formStatus? ('Thay đổi thông tin'):('Lưu thông tin')} </button> */}
-        </div>
+        <CostDetail item={itemSelected} typeData={typeData} timeData={timeData} onBackClick={handleBackClick}></CostDetail>
       ) : addForm ? (
         <div className="form-cover">
           <h1>Thêm chi phí</h1>
@@ -214,20 +137,16 @@ const CostSetting = () => {
                     name="price"
                     id="exampleText"
                     onChange={handleChange}
-                    // value={staffData.staffName}
-                    // disabled={disable}
                   />
                 </FormGroup>
               </Form>
               <div className="buttons">
-                <button type="button" onClick={handleSubmitForm}>
+                <button type="button" onClick={() => create_cost(newCostData)}>
                   Thêm chi phí
                 </button>
-                {/* <button type="button" onClick={deleteCost}>Xoá chi phí</button> */}
               </div>
             </div>
           </div>
-          {/* <button onClick={formOn}>{!formStatus? ('Thay đổi thông tin'):('Lưu thông tin')} </button> */}
         </div>
       ) : (
         <div className="list-cover">
