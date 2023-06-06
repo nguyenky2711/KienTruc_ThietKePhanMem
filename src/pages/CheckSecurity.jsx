@@ -2,78 +2,61 @@ import React from 'react'
 import SearchTitle from '../components/RightComponents/List/SearchTitle'
 import HeaderList from '../components/RightComponents/List/HeaderList';
 import ListItem from '../components/RightComponents/List/ListItem';
+import PocketBase from 'pocketbase';
 
+const pb = new PocketBase('https://aplonis-meln.alwaysdata.net');
+const authData = await pb.collection('users').authWithPassword(
+    'shanenoi.org@gmail.com',
+    '32641270013264',
+);
+
+let listCameras = [];
+const getCameras = async () => {
+    const records = await pb.collection('cameras').getFullList({
+        sort: '-created',
+    });
+    let cameras = [];
+    records.forEach((record) => {
+        console.log(record)
+        let cam = {
+            id: record.id,
+            cameraName: record.name,
+            cameraPosition: record.area,
+        }
+        if (record.screen !== "") {
+            cam.cameraImg = `https://aplonis-meln.alwaysdata.net/api/files/${record.collectionId}/${record.id}/${record.screen}?thumb=100x100`
+        }
+        cameras.push(cam)
+    })
+    return cameras
+}
+const refreshListCameras = async () => {
+    listCameras = await getCameras();
+}
+
+await refreshListCameras()
 const CheckSecurity = () => {
-  const data = [
-    {
-      id:1,
-      cameraImg: `https://picsum.photos/id/100/150/150`,
-      cameraName: 'Camera 1',
-      cameraPosition: 'Park 1',
-    },
-    {
-      id:2,
-      cameraImg: 'https://picsum.photos/id/200/150/150',
-      cameraName: 'Camera 2',
-      cameraPosition: 'Park 1',
-    },
-    {
-      id:3,
-      cameraImg: 'https://picsum.photos/id/300/150/150',
-      cameraName: 'Camera 3',
-      cameraPosition: 'Park 1',
-    },
-    {
-      id:4,
-      cameraImg: 'https://picsum.photos/id/400/150/150',
-      cameraName: 'Camera 4',
-      cameraPosition: 'Park 1',
-    },
-    {
-      id:5,
-      cameraImg: 'https://picsum.photos/id/500/150/150',
-      cameraName: 'Camera 1',
-      cameraPosition: 'Park 2',
-    },
-    {
-      id:6,
-      cameraImg: 'https://picsum.photos/id/600/150/150',
-      cameraName: 'Camera 2',
-      cameraPosition: 'Park 2',
-    },
-    {
-      id:7,
-      cameraImg: 'https://picsum.photos/id/700/150/150',
-      cameraName: 'Camera 3',
-      cameraPosition: 'Park 2',
-    },
-    {
-      id:8,
-      cameraImg: 'https://picsum.photos/id/800/150/150',
-      cameraName: 'Camera 4',
-      cameraPosition: 'Park 2',
-    },
-  ]
-  return (
-    <div style={{flexBasis:'75%'}}>
-      <SearchTitle title={"Kiểm tra an ninh"} search={true} />
-      <div className="list-cover">
-          <HeaderList
-            title={"Danh sách Camera"}
-            object={"Nhân viên"}
-            removeBtn_on={false}
-            addBtn_on={false}
-          />
-          <div className="body-list">
-            {data.map((item, index) => {
-              return (
-                <ListItem item={item} activateRemoveBtn={false} category={'camera'}></ListItem>
-              );
-            })}
-          </div>
+    let data = listCameras
+    return (
+        <div style={{flexBasis: '75%'}}>
+            <SearchTitle title={"Kiểm tra an ninh"} search={true}/>
+            <div className="list-cover">
+                <HeaderList
+                    title={"Danh sách Camera"}
+                    object={"Nhân viên"}
+                    removeBtn_on={false}
+                    addBtn_on={false}
+                />
+                <div className="body-list">
+                    {data.map((item, index) => {
+                        return (
+                            <ListItem item={item} activateRemoveBtn={false} category={'camera'}></ListItem>
+                        );
+                    })}
+                </div>
+            </div>
         </div>
-    </div>
-  )
+    )
 }
 
 export default CheckSecurity
