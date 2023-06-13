@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from "react";
 
 import { Button, Form, FormGroup, Label, Input, FormText } from "reactstrap";
+import PocketBase from "pocketbase";
 
-const ParkDetail = ({item, onBackClick}) => {
+const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
+const authData = await pb
+  .collection("users")
+  .authWithPassword("shanenoi.org@gmail.com", "32641270013264");
+
+const ParkDetail = ({ item, onBackClick }) => {
   const [disableInput, setDisableInput] = useState(true);
   const [itemSelected, setItemSelected] = useState(item);
+  console.log(itemSelected)
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     if (!disableInput) {
@@ -14,18 +21,29 @@ const ParkDetail = ({item, onBackClick}) => {
       }));
     }
   };
-  const handleDeletePark = (e) => {
-    // xử lý xoá  
-    
-    console.log("Hãy xoá")
+  const handleDeletePark = async (itemSelected) => {
+    // xử lý xoá
+    await pb.collection('areas').delete(itemSelected.id);
+    onBackClick();
+
   };
-  const handleChangePark = (itemSelected) => {
+  const handleChangePark = async (itemSelected) => {
     //xử lý sửa
-    setDisableInput(true)
-    console.log('Hãy cập nhật')
-    onBackClick()
+    let updateData = {
+      name: itemSelected.parkName,
+      code: itemSelected.parkID,
+      price: itemSelected.parkCostHire,
+      size: itemSelected.parkContained,
+      id: itemSelected.id,
+    }
+    console.log(itemSelected);
+    const updateRecord = await pb
+      .collection("areas")
+      .update(itemSelected.id, updateData);
+      setDisableInput(true);
+    onBackClick();
   };
-  const parkEmpty = itemSelected.parkCapacity - itemSelected.parkContained
+  const parkEmpty = itemSelected.parkCapacity - itemSelected.parkContained;
   return (
     <div className="form-cover">
       <h1>Thông tin bãi xe</h1>
@@ -102,7 +120,7 @@ const ParkDetail = ({item, onBackClick}) => {
           <div className="buttons">
             <button
               type="button"
-              onClick={() => handleDeletePark(itemSelected.parkID)}
+              onClick={() => handleDeletePark(itemSelected)}
             >
               Xoá bãi giữ xe
             </button>
@@ -111,7 +129,10 @@ const ParkDetail = ({item, onBackClick}) => {
                 Thay đổi thông tin bãi
               </button>
             ) : (
-              <button type="button" onClick={() => handleChangePark(itemSelected)}>
+              <button
+                type="button"
+                onClick={() => handleChangePark(itemSelected)}
+              >
                 Lưu thay đổi
               </button>
             )}

@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 
 import { Button, Form, FormGroup, Label, Input, FormText } from "reactstrap";
+import PocketBase from "pocketbase";
+
+const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
+const authData = await pb
+  .collection("users")
+  .authWithPassword("shanenoi.org@gmail.com", "32641270013264");
 
 const CostDetail = ({item, typeData, timeData, onBackClick}) => {
   const [disableInput, setDisableInput] = useState(true);
@@ -15,14 +21,16 @@ const CostDetail = ({item, typeData, timeData, onBackClick}) => {
     }
   };
   
-  const handleDeleteCost = (e) => {
+  const handleDeleteCost = async (itemSelected) => {
     //xử lý xoá
-    console.log('Hãy xoá tôi')
+    const detleteRecord= await pb.collection('prices').delete(itemSelected.id);
+    onBackClick()
   };
-  const handleChangeCost = (e) => {
+  const handleChangeCost = async (itemSelected) => {
     //xử lý thay đổi
-
-    console.log('Hãy cập nhật')
+    console.log(itemSelected)
+    const updateRecord = await pb.collection('prices').update(itemSelected.id, itemSelected);
+    // console.log('Hãy cập nhật')
     setDisableInput(true)
     onBackClick()
   };
@@ -37,7 +45,7 @@ const CostDetail = ({item, typeData, timeData, onBackClick}) => {
                   <Label for="exampleText">Loại xe</Label>
                   <Input
                     type="select"
-                    name="type"
+                    name="transport_type"
                     id="exampleSelect"
                     onChange={handleInputChange}
                     value={itemSelected.type}
@@ -76,7 +84,7 @@ const CostDetail = ({item, typeData, timeData, onBackClick}) => {
                 </FormGroup>
               </Form>
               <div className="buttons">
-                <button type="button" onClick={handleDeleteCost}>
+                <button type="button" onClick={()=>handleDeleteCost(itemSelected)}>
                   Xoá chi phí
                 </button>
                 {disableInput ? (
@@ -84,7 +92,7 @@ const CostDetail = ({item, typeData, timeData, onBackClick}) => {
                     Thay đổi chi phí
                   </button>
                 ) : (
-                  <button type="button" onClick={handleChangeCost}>
+                  <button type="button" onClick={()=>handleChangeCost(itemSelected)}>
                     Lưu chi phí
                   </button>
                 )}

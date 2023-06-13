@@ -1,8 +1,14 @@
+import PocketBase from "pocketbase";
 import React, {useState} from "react";
 
 import {Form, FormGroup, Input, Label} from "reactstrap";
+const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
+const authData = await pb
+  .collection("users")
+  .authWithPassword("shanenoi.org@gmail.com", "32641270013264");
 
 const EmployeeDetail = ({item, status, onBackClick}) => {
+    console.log(item)
     const [disableInput, setDisableInput] = useState(true);
     const [itemSelected, setItemSelected] = useState(item);
     const handleInputChange = (event) => {
@@ -14,48 +20,39 @@ const EmployeeDetail = ({item, status, onBackClick}) => {
             }));
         }
     };
-    const handleChangeStaff = (itemSelected) => {
-        setDisableInput(true)
-        console.log('Hãy cập nhật');
+    const handleChangeStaff = async(itemSelected) => {
+        // console.log('item');
         console.log(itemSelected)
+        const updateRecord = await pb.collection('users').update(itemSelected.id, itemSelected);
+        setDisableInput(true)
         onBackClick();
     };
     return (
         <div className="form-cover">
             <div className="staff-infor">
-                <img src={`https://picsum.photos/id/${itemSelected.id}/65/65`} alt=""/>
+                <img src={itemSelected.avatar} alt="" style={{width:'150px', height:'150px'}}/>
                 <div className="infor">
                     <Form className="">
                         <FormGroup className="infor-item">
                             <Label for="exampleText">Tên nhân viên</Label>
                             <Input
                                 type="text"
-                                name="staffName"
+                                name="name"
                                 id="exampleText"
                                 onChange={handleInputChange}
-                                value={itemSelected.staffName}
+                                value={itemSelected.name}
                                 disabled={disableInput}
                             />
                         </FormGroup>
-                        <FormGroup className="infor-item">
-                            <Label for="exampleText">Mã số nhân viên</Label>
-                            <Input
-                                type="text"
-                                name="staffId"
-                                id="exampleText"
-                                onChange={handleInputChange}
-                                value={itemSelected.staffId}
-                                disabled={disableInput}
-                            />
-                        </FormGroup>
+                        
                         <FormGroup className="infor-item">
                             <Label for="exampleText">Số điện thoại</Label>
                             <Input
                                 type="text"
-                                name="staffPhone"
+                                name="phone_number"
                                 id="exampleText"
                                 onChange={handleInputChange}
-                                value={itemSelected.staffPhone}
+                                value={itemSelected.phone_number}
                                 disabled={disableInput}
                             />
                         </FormGroup>
@@ -63,10 +60,10 @@ const EmployeeDetail = ({item, status, onBackClick}) => {
                             <Label for="exampleText">Trạng thái</Label>
                             <Input
                                 type="select"
-                                name="staffStatus"
+                                name="status"
                                 id="exampleSelect"
                                 onChange={handleInputChange}
-                                value={itemSelected.staffStatus}
+                                value={itemSelected.status}
                                 disabled={disableInput}
                             >
                                 {status.map((item, index) => {
@@ -78,10 +75,10 @@ const EmployeeDetail = ({item, status, onBackClick}) => {
                             <Label for="exampleText">CCCD</Label>
                             <Input
                                 type="text"
-                                name="staffCCCD"
+                                name="cccd"
                                 id="exampleText"
                                 onChange={handleInputChange}
-                                value={itemSelected.staffCCCD}
+                                value={itemSelected.cccd}
                                 disabled={disableInput}
                             />
                         </FormGroup>
@@ -89,10 +86,10 @@ const EmployeeDetail = ({item, status, onBackClick}) => {
                             <Label for="exampleText">Ngày bắt đầu đi làm</Label>
                             <Input
                                 type="text"
-                                name="staffDayStart"
+                                name="start_time"
                                 id="exampleText"
                                 onChange={handleInputChange}
-                                value={itemSelected.staffDayStart}
+                                value={itemSelected.start_time}
                                 disabled={disableInput}
                             />
                         </FormGroup>
@@ -100,10 +97,10 @@ const EmployeeDetail = ({item, status, onBackClick}) => {
                             <Label for="exampleText">Địa chỉ</Label>
                             <Input
                                 type="text"
-                                name="staffAddress"
+                                name="address"
                                 id="exampleText"
                                 onChange={handleInputChange}
-                                value={itemSelected.staffAddress}
+                                value={itemSelected.address}
                                 disabled={disableInput}
                             />
                         </FormGroup>
@@ -111,10 +108,10 @@ const EmployeeDetail = ({item, status, onBackClick}) => {
                             <Label for="exampleText">Ngày kết thúc làm việc</Label>
                             <Input
                                 type="text"
-                                name="staffDayEnd"
+                                name="end_time"
                                 id="exampleText"
                                 onChange={handleInputChange}
-                                value={itemSelected.staffDayEnd}
+                                value={itemSelected.end_time}
                                 disabled={disableInput}
                             />
                         </FormGroup>
@@ -126,7 +123,7 @@ const EmployeeDetail = ({item, status, onBackClick}) => {
                                 id="exampleText"
                                 onChange={handleInputChange}
                                 value={itemSelected.role}
-                                disabled={disableInput}
+                                disabled
                             />
                         </FormGroup>
                     </Form>

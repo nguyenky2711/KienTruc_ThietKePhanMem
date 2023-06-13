@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import SearchTitle from '../components/RightComponents/List/SearchTitle'
 import HeaderList from '../components/RightComponents/List/HeaderList';
 import ListItem from '../components/RightComponents/List/ListItem';
 import PocketBase from 'pocketbase';
+import { useLocation } from 'react-router-dom';
 
 const pb = new PocketBase('https://aplonis-meln.alwaysdata.net');
 const authData = await pb.collection('users').authWithPassword(
@@ -15,26 +16,29 @@ const getCameras = async () => {
     const records = await pb.collection('cameras').getFullList({
         sort: '-created',
     });
+    console.log(records)
     let cameras = [];
     records.forEach((record) => {
-        console.log(record)
+        // console.log(record)
         let cam = {
             id: record.id,
             cameraName: record.name,
             cameraPosition: record.area,
+            cameraImg: record.screen_v2,
         }
-        if (record.screen !== "") {
-            cam.cameraImg = `https://aplonis-meln.alwaysdata.net/api/files/${record.collectionId}/${record.id}/${record.screen}?thumb=100x100`
-        }
+        // if (record.screen !== "") {
+        //     cam.cameraImg = `https://aplonis-meln.alwaysdata.net/api/files/${record.collectionId}/${record.id}/${record.screen}?thumb=100x100`
+        // }
         cameras.push(cam)
     })
     return cameras
 }
 const refreshListCameras = async () => {
+    
     listCameras = await getCameras();
 }
-
 await refreshListCameras()
+
 const CheckSecurity = () => {
     let data = listCameras
     return (

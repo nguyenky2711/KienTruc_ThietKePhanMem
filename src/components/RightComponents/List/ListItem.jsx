@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
 const ListItem = ({item,activateRemoveBtn,category,onClick}) => {
   // const category = category;
+  // console.log(item)
   return category === "employee" ? (
     <div
       className="list-item"
@@ -11,17 +12,17 @@ const ListItem = ({item,activateRemoveBtn,category,onClick}) => {
       onClick={onClick}
     >
       <img
-        src={item.staffImg}
+        src={item.avatar}
         alt=""
         style={{ width: "65px", height: "65px", borderRadius: "50%" }}
       />
       <div className="item-content">
         <div>
           <p>
-            Họ và tên: <span>{item.staffName}</span>
+            Họ và tên: <span>{item.name}</span>
           </p>
           <p>
-            Mã nhân viên: <span>{item.staffId}</span>
+            Mã nhân viên: <span>{item.id}</span>
           </p>
         </div>
         <div style={activateRemoveBtn ? { opacity: 1 } : { opacity: 0 }}>
@@ -34,7 +35,7 @@ const ListItem = ({item,activateRemoveBtn,category,onClick}) => {
       className="list-item"
       style={{ flexBasis: "18%", flexDirection: "column" }}
     >
-    <img src={item.cameraImg} alt="" />
+    <img src={item.cameraImg} alt="abc" style={{width:'150px', height:'150px'}} />
       <div className="item-content">
         <div>
           <p style={{ margin: "0px" }}>
