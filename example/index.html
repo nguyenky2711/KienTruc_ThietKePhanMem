@@ -1,0 +1,39 @@
+<html>
+<head>
+  <script src="pocketbase.umd.js"></script> <!-- link to an external script file -->
+</head>
+<body>
+  <input type="file" id="fileInput" />
+  <script>
+    const pb = new PocketBase('https://aplonis-meln.alwaysdata.net');
+
+
+    const formData = new FormData();
+    const fileInput = document.getElementById('fileInput');
+
+    fileInput.addEventListener('change', function () {
+      for (let file of fileInput.files) {
+        formData.append('avatar', file);
+      }
+    });
+
+    formData.append("username", "test_username"+ `${new Date().getTime()}`)
+    formData.append("email", `test@example${new Date().getTime()}.com`)
+    formData.append("emailVisibility", true)
+    formData.append("password", "12345678")
+    formData.append("passwordConfirm", "12345678")
+    formData.append("name", "test")
+    formData.append("status", "Đang làm việc")
+    formData.append("phone_number", "test")
+    formData.append("cccd", "test")
+    formData.append("address", "test")
+    formData.append("start_time", "2022-01-01 10:00:00.123Z")
+    formData.append("end_time", "2022-01-01 10:00:00.123Z")
+    formData.append("role", "Quản Lý")
+
+    const run = async() => {
+      const createdRecord = await pb.collection('users').create(formData);
+    }
+  </script>
+</body>
+</html>
