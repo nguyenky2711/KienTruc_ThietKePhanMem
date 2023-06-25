@@ -124,11 +124,91 @@ class CostCRUD extends BaseCRUD {
         await this.client.collection(this.collect()).delete(id);
     }
 }
+// The concrete class for Camera CRUD operations
+class CameraCRUD extends BaseCRUD {
+    // The constructor that takes a base URL and a strategy object as parameters
+    constructor(client) {
+        super(client);
+    }
+    // The method for getting the collection name of a camera
+    collect() {
+        return "prices";
+    }
+    // The method for getting the list of cameras
+    async getList(page, perPage, queryParams) {
+        return await this.client.collection(this.collect()).getList(page, perPage, queryParams);
+    }
+    // The method for getting the full list of cameras
+    async getFullList(queryParams) {
+        return await this.client.collection(this.collect()).getFullList(queryParams);
+    }
+    // The method for getting the first camera from the list
+    async getFirstListItem(filter, queryParams) {
+        return await this.client.collection(this.collect()).getFirstListItem(filter, queryParams);
+    }
+    // The method for creating a camera
+    async create(item) {
+        return await this.client.collection(this.collect()).create(item);
+    }
+    // The method for reading a camera by id
+    async read(id) {
+        return await this.client.collection(this.collect()).getOne(id, {});
+    }
+    // The method for updating a camera by id
+    async update(id, item) {
+        return await this.client.collection(this.collect()).update(id, item);
+    }
+    // The method for deleting a camera by id
+    async delete(id) {
+        await this.client.collection(this.collect()).delete(id);
+    }
+}
+// The concrete class for Attendance CRUD operations
+class AttendanceCRUD extends BaseCRUD {
+    // The constructor that takes a base URL and a strategy object as parameters
+    constructor(client) {
+        super(client);
+    }
+    // The method for getting the collection name of an attendance
+    collect() {
+        return "prices";
+    }
+    // The method for getting the list of Attendances
+    async getList(page, perPage, queryParams) {
+        return await this.client.collection(this.collect()).getList(page, perPage, queryParams);
+    }
+    // The method for getting the full list of Attendances
+    async getFullList(queryParams) {
+        return await this.client.collection(this.collect()).getFullList(queryParams);
+    }
+    // The method for getting the first Attendance from the list
+    async getFirstListItem(filter, queryParams) {
+        return await this.client.collection(this.collect()).getFirstListItem(filter, queryParams);
+    }
+    // The method for creating an attendance
+    async create(item) {
+        return await this.client.collection(this.collect()).create(item);
+    }
+    // The method for reading an attendance by id
+    async read(id) {
+        return await this.client.collection(this.collect()).getOne(id, {});
+    }
+    // The method for updating an attendance by id
+    async update(id, item) {
+        return await this.client.collection(this.collect()).update(id, item);
+    }
+    // The method for deleting a attendance by id
+    async delete(id) {
+        await this.client.collection(this.collect()).delete(id);
+    }
+}
 // The type map for entity types and CRUD classes
 const crudMap = {
     employee: EmployeeCRUD,
     park: ParkCRUD,
     cost: CostCRUD,
+    camera: CameraCRUD,
+    attendance: AttendanceCRUD,
 };
 // The factory function that takes an entity type and returns a CRUD object
 export function CreateCRUD(pb, type) {
