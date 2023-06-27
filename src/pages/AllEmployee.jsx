@@ -7,12 +7,12 @@ import ListItem from "../components/RightComponents/List/ListItem";
 import "../styles/list.css";
 import EmployeeDetail from "./EmployeeDetail";
 import PocketBase from "pocketbase";
-
+import { useDispatch, useSelector } from "react-redux";
+import { createStaffThunk, getStaffThunk } from "../store/action/action";
 const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
 const authData = await pb
   .collection("users")
   .authWithPassword("shanenoi.org@gmail.com", "32641270013264");
-
 let listStaff = [];
 const getStaffs = async () => {
   const records = await pb.collection("users").getFullList({
@@ -31,9 +31,9 @@ const getStaffs = async () => {
       end_time: record.end_time,
       role: record.role,
     };
-    if (record.avatar !== "") {
-      stf.avatar = `https://aplonis-meln.alwaysdata.net/api/files/_pb_users_auth_/${record.id}/${record.avatar}`;
-    }
+    // if (record.avatar !== "") {
+    //   stf.avatar = `https://aplonis-meln.alwaysdata.net/api/files/_pb_users_auth_/${record.id}/${record.avatar}`;
+    // }
     listStfs.push(stf);
   });
   return listStfs;
@@ -46,6 +46,16 @@ await refreshListStaffs();
 
 // import Font
 const AllEmployee = () => {
+  const dispatch = useDispatch();
+  const { staffList } = useSelector((state) => state.slice);
+  const userSessionStorage =
+    JSON.parse(sessionStorage.getItem("pocketbase_auth")) ||
+    JSON.parse(localStorage.getItem("pocketbase_auth"));
+  useEffect(() => {
+    dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
+      console.log(res);
+    });
+  }, [dispatch]);
   const status = [
     {
       id: 1,
@@ -57,18 +67,9 @@ const AllEmployee = () => {
     },
   ];
   const [newStaffData, setNewStaffData] = useState({
-    // // id:'',
-    // staffName: "",
-    // staffId: "",
-    // staffPhone: "",
-    // staffStatus: "",
-    // staffCCCD: "",
-    // staffDayStart: "",
-    // staffAddress: "",
-    // staffDayEnd: "",
-    role: "Nhân viên",
-    username: "test_username",
-    email: "test@example.com",
+    role: "Nhân Vien",
+    username: "test_usernameahah",
+    email: "test273@example.com",
     emailVisibility: true,
     password: "12345678",
     passwordConfirm: "12345678",
@@ -82,7 +83,7 @@ const AllEmployee = () => {
   const [activate, setActivate] = useState(false);
   const [addForm, setAddForm] = useState(false);
   const [data, setData] = useState(listStaff);
-
+  const [file, setFile] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const inputRef = useRef(null);
   const handleRemove = () => {
@@ -101,29 +102,33 @@ const AllEmployee = () => {
       [name]: value,
     }));
   };
-  const create_staff = async (newStaffData) => {
+  var data2 = {
+    username: `test_username${new Date().getTime()}`,
+    email: `test@example${new Date().getTime()}.com`,
+    emailVisibility: true,
+    password: "12345678",
+    passwordConfirm: "12345678",
+    name: "test",
+    status: "Đang làm việc",
+    phone_number: "test",
+    cccd: "test",
+    address: "test",
+    start_time: "2022-01-01 10:00:00.123Z",
+    end_time: "2022-01-01 10:00:00.123Z",
+    role: "Nhân Vien",
+    avatar: file,
+  };
+  const create_staff = (newStaffData) => {
     // xử lý thêm
-    console.log(newStaffData);
-    const record = await pb.collection("users").create(data);
-    await refreshListStaffs();
-    setAddForm(false);
-    //     const data = {
-    //     "username": "test_username",
-    //     "email": "test@example.com",
-    //     "emailVisibility": true,
-    //     "password": "12345678",
-    //     "passwordConfirm": "12345678",
-    //     "name": "test",
-    //     "status": "Đang làm việc",
-    //     "phone_number": "test",
-    //     "cccd": "test",
-    //     "address": "test",
-    //     "start_time": "2022-01-01 10:00:00.123Z",
-    //     "end_time": "2022-01-01 10:00:00.123Z",
-    //     "role": "Quản Lý"
-    // };
-
-    // const record = await pb.collection('users').create(data);
+    console.log(data2)
+    dispatch(createStaffThunk([data2, userSessionStorage.token])).then(
+      (res) => {
+        // console.log(res);
+        dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
+          setAddForm(false);
+        });
+      }
+    );
   };
 
   const handleSelectedItem = (item, index) => {
@@ -135,36 +140,49 @@ const AllEmployee = () => {
     setForm(true);
   };
 
-  const handleBackClick = async () => {
-    setForm(false);
-    await refreshListStaffs();
-    setData(listStaff);
+  const handleBackClick = () => {
+    dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
+      setForm(false);
+      setData(listStaff);
+    });
   };
 
-  const handleImageSelect = () => {
-    inputRef.current.click();
-  };
+  // const handleFileChange = (event) => {
+  //   const fileInput = event.target;
+  //   const files = fileInput.files;
 
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
+  //   for (let i = 0; i < files.length; i++) {
+  //     const file = files[i];
+  //     // formData.append('avatar', file);
+  //     console.log(file);
+  //   }
+  // };
+  const handleFileChange = (event) => {
+    const fileInput = event.target;
+    const files = fileInput.files;
 
-    reader.onload = () => {
-      setSelectedImage(reader.result);
-    };
+    if (files && files.length > 0) {
+      const temp_file = files[0];
+      const reader = new FileReader();
 
-    if (file) {
-      reader.readAsDataURL(file);
+      reader.onload = (e) => {
+        setSelectedImage(e.target.result);
+      };
+
+      reader.readAsDataURL(temp_file);
+      setFile((preData) => ({
+        ...preData,
+        avatar: temp_file,
+      }));
     }
+    
   };
-  useEffect(() => {
-    setNewStaffData((preData) => ({
-      ...preData,
-      avatar: selectedImage,
-      start_time: "2022-01-01 10:00:00",
-      end_time: "2022-01-01 10:00:00",
-    }));
-  }, [selectedImage]);
+console.log(file)
+  const handleImageClick = () => {
+    // Clear the selected image
+    setSelectedImage(null);
+    document.getElementById("fileInput").click();
+  };
   return (
     <div className="container-list" style={{ flexBasis: "75%" }}>
       <SearchTitle title={"Quản lý nhân viên"} search={true} />
@@ -184,15 +202,15 @@ const AllEmployee = () => {
                 height: "150px",
                 border: "1px solid black",
               }}
-              onClick={handleImageSelect}
+              onClick={handleImageClick}
             >
               <input
                 type="file"
-                accept="image/*"
-                ref={inputRef}
+                id="fileInput"
+                onChange={handleFileChange}
                 style={{ display: "none" }}
-                onChange={handleFileSelect}
               />
+
               {selectedImage ? (
                 <img
                   src={selectedImage}
@@ -294,7 +312,7 @@ const AllEmployee = () => {
                     name="role"
                     id="exampleText"
                     onChange={handleChange}
-                    value={"Nhân viên"}
+                    value={"Nhân Vien"}
                     // disabled={disable}
                   />
                 </FormGroup>
@@ -322,7 +340,7 @@ const AllEmployee = () => {
             addBtn_on={true}
           />
           <div className="body-list">
-            {data.map((item, index) => {
+            {staffList?.items?.map((item, index) => {
               return (
                 <ListItem
                   item={item}

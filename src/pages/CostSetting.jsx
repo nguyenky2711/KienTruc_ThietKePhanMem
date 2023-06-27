@@ -4,6 +4,8 @@ import HeaderList from "../components/RightComponents/List/HeaderList";
 import { Form, FormGroup, Input, Label, Table } from "reactstrap";
 import CostDetail from "./CostDetail";
 import PocketBase from "pocketbase";
+import { useDispatch, useSelector } from "react-redux";
+import { createCostThunk, getCostThunk } from "../store/action/action";
 
 const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
 const authData = await pb
@@ -30,7 +32,6 @@ const getPrices = async () => {
 };
 
 const refreshListPrices = async () => {
-    
   listPrices = await getPrices();
 };
 
@@ -62,7 +63,7 @@ const CostSetting = () => {
   ];
   const [data, setData] = useState(listPrices);
   const [newCostData, setNewCostData] = useState({
-    id:'',
+    id: "",
     transport_type: "Xe máy",
     time: "06:00 - 18:00",
     price: 0,
@@ -83,26 +84,36 @@ const CostSetting = () => {
       [name]: value,
     }));
   };
-  const create_cost = async (newCostData) => {
+  const dispatch = useDispatch();
+  const { costList } = useSelector((state) => state.slice);
+  const userSessionStorage =
+    JSON.parse(sessionStorage.getItem('pocketbase_auth')) ||
+    JSON.parse(localStorage.getItem('pocketbase_auth'));
+  const create_cost = (newCostData) => {
     //xử lý thêm
-    const newRecord = await pb.collection("prices").create(newCostData);
-    setAddForm(false);
-    await refreshListPrices();
-    setData(listPrices)
+    dispatch(createCostThunk([newCostData, userSessionStorage.token])).then((res) =>
+      dispatch(getCostThunk([userSessionStorage.token])).then((res) => {
+        setData(listPrices);
+        setAddForm(false);
+      })
+    );
   };
+  useEffect(() => {
+    dispatch(getCostThunk([userSessionStorage.token]));
+  }, [dispatch]);
   const handleSelectedItem = (item, index) => {
     setItemSelected(item);
     setSelectedIndex(index);
     setForm(true);
   };
-  const handleBackClick = async() => {
-    setForm(false);
-    await refreshListPrices();
-    setData(listPrices)
+  const handleBackClick = () => {
+    dispatch(getCostThunk([userSessionStorage.token])).then((res) => {
+      setForm(false);
+
+      setData(listPrices);
+    });
   };
-  useEffect(() => {
-    // refreshListPrices();
-  }, [addForm, form]);
+
   return (
     <div style={{ flexBasis: "75%" }}>
       <SearchTitle title={"Thiết lập chi phí"} search={true} />
@@ -188,7 +199,7 @@ const CostSetting = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.map((item, index) => {
+                {costList?.items?.map((item, index) => {
                   return (
                     <tr
                       onClick={() => handleSelectedItem(item, index)}
@@ -197,7 +208,9 @@ const CostSetting = () => {
                         padding: "10px 0px",
                       }}
                     >
-                      <td style={{ padding: "15px 0px" }}>{item.type}</td>
+                      <td style={{ padding: "15px 0px" }}>
+                        {item.transport_type}
+                      </td>
                       <td style={{ padding: "15px 0px" }}>{item.time}</td>
                       <td style={{ padding: "15px 0px" }}>{item.price} đồng</td>
                     </tr>

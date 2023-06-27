@@ -8,6 +8,13 @@ import { Form, FormGroup, Input, Label } from "reactstrap";
 import ParkDetail from "./ParkDetail";
 
 import PocketBase from "pocketbase";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createCameraThunk,
+  createParkThunk,
+  getCameraThunk,
+  getParkThunk,
+} from "../store/action/action";
 
 const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
 const authData = await pb
@@ -81,7 +88,6 @@ const ListParks = () => {
     setAddForm(true);
   };
 
-  
   const handleChange = (event) => {
     const { name, value } = event.target;
     setNewParkData((prevData) => ({
@@ -90,20 +96,34 @@ const ListParks = () => {
       parkEmpty: prevData.parkCapacity - prevData.parkContained,
     }));
   };
-  const create_park = async (newParkdata) => {
+  const dispatch = useDispatch();
+  const { parkList, cameraList } = useSelector((state) => state.slice);
+  const userSessionStorage =
+    JSON.parse(sessionStorage.getItem("pocketbase_auth")) ||
+    JSON.parse(localStorage.getItem("pocketbase_auth"));
+  console.log(userSessionStorage);
+  const create_park = (newParkdata) => {
     // xử lý thêm
 
-    const newRecord = await pb.collection("areas").create(newParkdata);
-    const data = {
-        "name": "Bãi "+ (listAreas.length+1),
-        "area": newRecord.id,
-        "screen_v2": `https://picsum.photos/id/${listAreas.length+1}/200/300`
-    };
-    
-    const record = await pb.collection('cameras').create(data);
-    setAddForm(false);
-    await refreshListAreas();
-    setData(listAreas);
+    dispatch(createParkThunk([newParkdata, userSessionStorage.token])).then(
+      (res) => {
+        dispatch(getParkThunk(userSessionStorage.token)).then((res) => {
+          console.log(res.payload[0]);
+          setAddForm(false);
+          // setData(listAreas);
+          const data = {
+            name: "Camera " + (parkList.items.length + 1),
+            area: res.payload[0].id,
+            screen_v2: `https://picsum.photos/id/${
+              parkList.items.length + 1
+            }/200/300`,
+          };
+          dispatch(createCameraThunk([data, userSessionStorage.token])).then(
+            (res) => {}
+          );
+        });
+      }
+    );
   };
 
   const handleSelectedItem = (item, index) => {
@@ -114,11 +134,16 @@ const ListParks = () => {
     }));
     setForm(true);
   };
-  const handleBackClick = async () => {
-    setForm(false);
-    await refreshListAreas();
-    setData(listAreas)
-};
+  const handleBackClick = () => {
+    dispatch(getParkThunk(userSessionStorage.token)).then((res) => {
+      setData(listAreas);
+      setForm(false);
+    });
+  };
+  useEffect(() => {
+    dispatch(getParkThunk(userSessionStorage.token));
+    dispatch(getCameraThunk(userSessionStorage.token));
+  }, [dispatch]);
   return (
     <div style={{ flexBasis: "75%" }}>
       <SearchTitle title={"Quản lý bãi xe"} search={true} />
@@ -127,6 +152,10 @@ const ListParks = () => {
         <ParkDetail
           item={itemSelected}
           onBackClick={handleBackClick}
+          idCamera={
+            cameraList?.items?.find((item) => item.area === itemSelected.id)
+              ?.id || null
+          }
         ></ParkDetail>
       ) : addForm ? (
         <div className="form-cover">
@@ -214,7 +243,7 @@ const ListParks = () => {
               gridTemplateColumns: "auto auto auto auto",
             }}
           >
-            {data.map((item, index) => {
+            {parkList?.items?.map((item, index) => {
               return (
                 <ListItem
                   item={item}
