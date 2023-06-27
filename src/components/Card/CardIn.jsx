@@ -37,7 +37,8 @@ const CardIn = () => {
     JSON.parse(localStorage.getItem('pocketbase_auth'));
   console.log(userSessionStorage)
   useEffect(() => {
-    dispatch(getParkThunk([userSessionStorage.token]));
+    // dispatch(getParkThunk([userSessionStorage.token]));
+    dispatch(getParkThunk());
   }, [dispatch]);
   const getPic = (e) => {
     // e.prevent
@@ -63,6 +64,7 @@ const CardIn = () => {
     const data = {
       transport_type: formData.type,
       card_id: formData.cardId,
+      license_car: formData.licensePlate,
       // check_in: formData.timeIn,
       check_in: "2022-01-01 10:00:00.123Z",
       check_out: "",
@@ -70,7 +72,8 @@ const CardIn = () => {
       check_out_img: "https://example.com",
       area_id: formData.park,
     };
-    dispatch(createCardInforThunk([data, userSessionStorage.token])).then((res) => console.log(res));
+    dispatch(createCardInforThunk(data)).then((res) => console.log(res));
+    // dispatch(createCardInforThunk([data, userSessionStorage.token])).then((res) => console.log(res));
   };
   const videoRef = useRef(null);
   const imgRef = useRef(null);
@@ -83,6 +86,7 @@ const CardIn = () => {
     canvas.height = video.videoHeight;
     canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
     const capturedImageURL = canvas.toDataURL();
+    console.log(capturedImageURL)
     imgRef.current.src = capturedImageURL;
   };
 
@@ -90,7 +94,7 @@ const CardIn = () => {
     setShowVideo(true);
   };
 
-
+// console.log(imgRef)
   
   return (
     <div className="card-cover">
@@ -168,7 +172,8 @@ const CardIn = () => {
                 id="exampleSelect"
                 onChange={handleChange}
               >
-                {parkList?.items?.map((item, index) => {
+                {parkList?.map((item, index) => {
+                // {parkList?.items?.map((item, index) => {
                   return (
                     <option key={index} value={item.id}>
                       {item.name}

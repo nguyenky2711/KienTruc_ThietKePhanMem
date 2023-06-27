@@ -5,6 +5,7 @@ import {
     getParkThunk,
     getCameraThunk,
     getUserInforThunk,
+    getCardListThunk,
 } from '../action/action';
 
 
@@ -15,6 +16,7 @@ const slice = createSlice({
         parkList: [],
         costList: [],
         cameraList: [],
+        cardList: [],
         profile: null,
     },
     reducers: {
@@ -23,6 +25,7 @@ const slice = createSlice({
             state.parkList = [];
             state.costList = [];
             state.cameraList = [];
+            state.cardList = [];
             state.profile = null;
         },
     },
@@ -64,6 +67,14 @@ const slice = createSlice({
             (state, { payload }) => {
                 if (payload) {
                     state.profile = payload.record
+                }
+            }
+        );
+        builder.addCase(
+            getCardListThunk.fulfilled,
+            (state, { payload }) => {
+                if (payload) {
+                    state.cardList = payload
                 }
             }
         );

@@ -52,7 +52,10 @@ const AllEmployee = () => {
     JSON.parse(sessionStorage.getItem("pocketbase_auth")) ||
     JSON.parse(localStorage.getItem("pocketbase_auth"));
   useEffect(() => {
-    dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
+    // dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
+    //   console.log(res);
+    // });
+    dispatch(getStaffThunk()).then((res) => {
       console.log(res);
     });
   }, [dispatch]);
@@ -83,7 +86,7 @@ const AllEmployee = () => {
   const [activate, setActivate] = useState(false);
   const [addForm, setAddForm] = useState(false);
   const [data, setData] = useState(listStaff);
-  const [file, setFile] = useState([]);
+  const [file, setFile] = useState();
   const [selectedImage, setSelectedImage] = useState(null);
   const inputRef = useRef(null);
   const handleRemove = () => {
@@ -116,19 +119,38 @@ const AllEmployee = () => {
     start_time: "2022-01-01 10:00:00.123Z",
     end_time: "2022-01-01 10:00:00.123Z",
     role: "Nhân Vien",
-    avatar: file,
+    avatar: null,
   };
   const create_staff = (newStaffData) => {
     // xử lý thêm
-    console.log(data2)
-    dispatch(createStaffThunk([data2, userSessionStorage.token])).then(
-      (res) => {
-        // console.log(res);
-        dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
-          setAddForm(false);
-        });
-      }
-    );
+    const formData = new FormData();
+
+    formData.append("username", "test_username" + `${new Date().getTime()}`);
+    formData.append("email", `test@example${new Date().getTime()}.com`);
+    formData.append("emailVisibility", true);
+    formData.append("password", "12345678");
+    formData.append("passwordConfirm", "12345678");
+    formData.append("name", "test");
+    formData.append("status", "Đang làm việc");
+    formData.append("phone_number", "test");
+    formData.append("cccd", "test");
+    formData.append("address", "test");
+    formData.append("start_time", "2022-01-01 10:00:00.123Z");
+    formData.append("end_time", "2022-01-01 10:00:00.123Z");
+    formData.append("role", "Nhân Vien");
+    formData.append("avatar", file);
+
+    console.log(data2);
+    // dispatch(createStaffThunk([data2, userSessionStorage.token])).then(
+    dispatch(createStaffThunk(formData)).then((res) => {
+      // console.log(res);
+      // dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
+      //   setAddForm(false);
+      // });
+      dispatch(getStaffThunk()).then((res) => {
+        setAddForm(false);
+      });
+    });
   };
 
   const handleSelectedItem = (item, index) => {
@@ -141,7 +163,11 @@ const AllEmployee = () => {
   };
 
   const handleBackClick = () => {
-    dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
+    // dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
+    //   setForm(false);
+    //   setData(listStaff);
+    // });
+    dispatch(getStaffThunk()).then((res) => {
       setForm(false);
       setData(listStaff);
     });
@@ -170,14 +196,15 @@ const AllEmployee = () => {
       };
 
       reader.readAsDataURL(temp_file);
-      setFile((preData) => ({
-        ...preData,
-        avatar: temp_file,
-      }));
+      // setFile((preData) => ({
+      //   ...preData,
+      //   avatar: temp_file,
+      // }));
+      setFile(files[0]);
+      data2.avatar = temp_file.name;
     }
-    
   };
-console.log(file)
+  console.log(file);
   const handleImageClick = () => {
     // Clear the selected image
     setSelectedImage(null);
@@ -340,7 +367,8 @@ console.log(file)
             addBtn_on={true}
           />
           <div className="body-list">
-            {staffList?.items?.map((item, index) => {
+            {staffList?.map((item, index) => {
+              // {staffList?.items?.map((item, index) => {
               return (
                 <ListItem
                   item={item}

@@ -87,19 +87,22 @@ const CostSetting = () => {
   const dispatch = useDispatch();
   const { costList } = useSelector((state) => state.slice);
   const userSessionStorage =
-    JSON.parse(sessionStorage.getItem('pocketbase_auth')) ||
-    JSON.parse(localStorage.getItem('pocketbase_auth'));
+    JSON.parse(sessionStorage.getItem("pocketbase_auth")) ||
+    JSON.parse(localStorage.getItem("pocketbase_auth"));
   const create_cost = (newCostData) => {
     //xử lý thêm
-    dispatch(createCostThunk([newCostData, userSessionStorage.token])).then((res) =>
-      dispatch(getCostThunk([userSessionStorage.token])).then((res) => {
+    // dispatch(createCostThunk([newCostData, userSessionStorage.token])).then(
+    dispatch(createCostThunk(newCostData)).then((res) =>
+      // dispatch(getCostThunk([userSessionStorage.token])).then((res) => {
+      dispatch(getCostThunk()).then((res) => {
         setData(listPrices);
         setAddForm(false);
       })
     );
   };
   useEffect(() => {
-    dispatch(getCostThunk([userSessionStorage.token]));
+    dispatch(getCostThunk());
+    // dispatch(getCostThunk([userSessionStorage.token]));
   }, [dispatch]);
   const handleSelectedItem = (item, index) => {
     setItemSelected(item);
@@ -107,7 +110,8 @@ const CostSetting = () => {
     setForm(true);
   };
   const handleBackClick = () => {
-    dispatch(getCostThunk([userSessionStorage.token])).then((res) => {
+    // dispatch(getCostThunk([userSessionStorage.token])).then((res) => {
+    dispatch(getCostThunk()).then((res) => {
       setForm(false);
 
       setData(listPrices);
@@ -199,7 +203,8 @@ const CostSetting = () => {
                 </tr>
               </thead>
               <tbody>
-                {costList?.items?.map((item, index) => {
+                {costList?.map((item, index) => {
+                // {costList?.items?.map((item, index) => {
                   return (
                     <tr
                       onClick={() => handleSelectedItem(item, index)}

@@ -29,10 +29,12 @@ const ParkDetail = ({ item, idCamera, onBackClick }) => {
     JSON.parse(localStorage.getItem("pocketbase_auth"));
   const handleDeletePark = async (itemSelected) => {
     // xử lý xoá
-    dispatch(deleteCameraThunk([idCamera, userSessionStorage.token])).then(
+    dispatch(deleteCameraThunk(idCamera)).then(
+      // dispatch(deleteCameraThunk([idCamera, userSessionStorage.token])).then(
       (res) => {
         dispatch(
-          deleteParkThunk([itemSelected.id, userSessionStorage.token])
+          deleteParkThunk(itemSelected.id)
+          // deleteParkThunk([itemSelected.id, userSessionStorage.token])
         ).then((res) => {
           onBackClick();
         });
@@ -50,7 +52,8 @@ const ParkDetail = ({ item, idCamera, onBackClick }) => {
       capacity: itemSelected.capacity,
     };
     dispatch(
-      updateParkThunk([itemSelected.id, updateData, userSessionStorage.token])
+      // updateParkThunk([itemSelected.id, updateData, userSessionStorage.token])
+      updateParkThunk([itemSelected.id, updateData])
     ).then((res) => {
       setDisableInput(true);
       onBackClick();

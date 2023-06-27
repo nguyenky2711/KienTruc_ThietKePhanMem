@@ -14,7 +14,8 @@ const CheckSecurity = () => {
     JSON.parse(sessionStorage.getItem("pocketbase_auth")) ||
     JSON.parse(localStorage.getItem("pocketbase_auth"));
   useEffect(() => {
-    dispatch(getCameraThunk([userSessionStorage.token]));
+    dispatch(getCameraThunk());
+    // dispatch(getCameraThunk([userSessionStorage.token]));
   }, [dispatch]);
   return (
     <div style={{ flexBasis: "75%" }}>
@@ -27,7 +28,8 @@ const CheckSecurity = () => {
           addBtn_on={false}
         />
         <div className="body-list">
-          {cameraList?.items?.map((item, index) => {
+          {cameraList?.map((item, index) => {
+          // {cameraList?.items?.map((item, index) => {
             return (
               <ListItem
                 item={item}
