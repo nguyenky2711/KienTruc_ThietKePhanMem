@@ -83,7 +83,7 @@ const AllEmployee = () => {
   const [activate, setActivate] = useState(false);
   const [addForm, setAddForm] = useState(false);
   const [data, setData] = useState(listStaff);
-
+  const [file, setFile] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const inputRef = useRef(null);
   const handleRemove = () => {
@@ -102,31 +102,33 @@ const AllEmployee = () => {
       [name]: value,
     }));
   };
+  var data2 = {
+    username: `test_username${new Date().getTime()}`,
+    email: `test@example${new Date().getTime()}.com`,
+    emailVisibility: true,
+    password: "12345678",
+    passwordConfirm: "12345678",
+    name: "test",
+    status: "Đang làm việc",
+    phone_number: "test",
+    cccd: "test",
+    address: "test",
+    start_time: "2022-01-01 10:00:00.123Z",
+    end_time: "2022-01-01 10:00:00.123Z",
+    role: "Nhân Vien",
+    avatar: file,
+  };
   const create_staff = (newStaffData) => {
     // xử lý thêm
-
-    const data = {
-      username: "test_usernamehi1hi",
-      email: "test31@example.com",
-      emailVisibility: true,
-      password: "12345678",
-      passwordConfirm: "12345678",
-      name: "test",
-      status: "Đang làm việc",
-      phone_number: "test",
-      cccd: "test",
-      address: "test",
-      start_time: "2022-01-01 10:00:00.123Z",
-      end_time: "2022-01-01 10:00:00.123Z",
-      role: "Nhân Vien",
-      avatar: selectedImage,
-    };
-    dispatch(createStaffThunk([data, userSessionStorage.token])).then((res) => {
-      console.log(res);
-      dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
-        setAddForm(false);
-      });
-    });
+    console.log(data2)
+    dispatch(createStaffThunk([data2, userSessionStorage.token])).then(
+      (res) => {
+        // console.log(res);
+        dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
+          setAddForm(false);
+        });
+      }
+    );
   };
 
   const handleSelectedItem = (item, index) => {
@@ -145,31 +147,42 @@ const AllEmployee = () => {
     });
   };
 
-  const handleImageSelect = () => {
-    inputRef.current.click();
-  };
+  // const handleFileChange = (event) => {
+  //   const fileInput = event.target;
+  //   const files = fileInput.files;
 
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
+  //   for (let i = 0; i < files.length; i++) {
+  //     const file = files[i];
+  //     // formData.append('avatar', file);
+  //     console.log(file);
+  //   }
+  // };
+  const handleFileChange = (event) => {
+    const fileInput = event.target;
+    const files = fileInput.files;
 
-    reader.onload = () => {
-      setSelectedImage(reader.result);
-    };
+    if (files && files.length > 0) {
+      const temp_file = files[0];
+      const reader = new FileReader();
 
-    if (file) {
-      reader.readAsDataURL(file);
-      // reader.readAsArrayBuffer(file);
+      reader.onload = (e) => {
+        setSelectedImage(e.target.result);
+      };
+
+      reader.readAsDataURL(temp_file);
+      setFile((preData) => ({
+        ...preData,
+        avatar: temp_file,
+      }));
     }
+    
   };
-  useEffect(() => {
-    setNewStaffData((preData) => ({
-      ...preData,
-      // avatar: selectedImage,
-      start_time: "2022-01-01 10:00:00",
-      end_time: "2022-01-01 10:00:00",
-    }));
-  }, [selectedImage]);
+console.log(file)
+  const handleImageClick = () => {
+    // Clear the selected image
+    setSelectedImage(null);
+    document.getElementById("fileInput").click();
+  };
   return (
     <div className="container-list" style={{ flexBasis: "75%" }}>
       <SearchTitle title={"Quản lý nhân viên"} search={true} />
@@ -189,15 +202,15 @@ const AllEmployee = () => {
                 height: "150px",
                 border: "1px solid black",
               }}
-              onClick={handleImageSelect}
+              onClick={handleImageClick}
             >
               <input
                 type="file"
-                accept="image/*"
-                ref={inputRef}
+                id="fileInput"
+                onChange={handleFileChange}
                 style={{ display: "none" }}
-                onChange={handleFileSelect}
               />
+
               {selectedImage ? (
                 <img
                   src={selectedImage}

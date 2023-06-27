@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
 const ListItem = ({item,activateRemoveBtn,category,onClick}) => {
   // const category = category;
-  console.log(item)
+  // console.log(item)
   return category === "employee" ? (
     <div
       className="list-item"

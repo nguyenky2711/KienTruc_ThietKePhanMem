@@ -15,6 +15,7 @@
       for (let file of fileInput.files) {
         formData.append('avatar', file);
       }
+      console.log(formData)
     });
 
     formData.append("username", "test_username"+ `${new Date().getTime()}`)

@@ -10,8 +10,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 // import PublicRoutes from '../../routes/PublicRoutes.js'
 const Layout = () => {
   // const { role } = useSelector((state) => state.profile)
-  // const role = 'Quản lý'
-  const role = 'Nhân Vien'
+  const role = 'Quản lý'
+  // const role = 'Nhân Vien'
   return (
     <>
       <Login></Login> 

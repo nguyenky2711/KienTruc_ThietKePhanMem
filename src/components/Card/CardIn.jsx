@@ -168,7 +168,7 @@ const CardIn = () => {
                 id="exampleSelect"
                 onChange={handleChange}
               >
-                {parkList.map((item, index) => {
+                {parkList?.items?.map((item, index) => {
                   return (
                     <option key={index} value={item.id}>
                       {item.name}
@@ -204,6 +204,7 @@ const CardIn = () => {
           )}
           <img ref={imgRef} alt="Captured" />
         </div> */}
+        
       </div>
       {/* <VideoCaptureComponent video={video}/> */}
     </div>
