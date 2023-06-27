@@ -18,15 +18,19 @@ const CostDetail = ({ item, typeData, timeData, onBackClick }) => {
   };
   const dispatch = useDispatch();
   const userSessionStorage =
-    JSON.parse(sessionStorage.getItem('pocketbase_auth')) ||
-    JSON.parse(localStorage.getItem('pocketbase_auth'));
+    JSON.parse(sessionStorage.getItem("pocketbase_auth")) ||
+    JSON.parse(localStorage.getItem("pocketbase_auth"));
   const handleDeleteCost = (itemSelected) => {
     //xử lý xoá
-    dispatch(deleteCostThunk([itemSelected.id, userSessionStorage.token])).then((res) => onBackClick());
+    // dispatch(deleteCostThunk([itemSelected.id, userSessionStorage.token])).then(
+      dispatch(deleteCostThunk(itemSelected.id)).then(
+      (res) => onBackClick()
+    );
   };
   const handleChangeCost = (itemSelected) => {
     //xử lý thay đổi
-    dispatch(updateCostThunk([itemSelected.id, itemSelected, userSessionStorage.token])).then((res) => {
+    // dispatch(updateCostThunk([itemSelected.id, itemSelected, userSessionStorage.token])).then((res) => {
+    dispatch(updateCostThunk([itemSelected.id, itemSelected])).then((res) => {
       setDisableInput(true);
       onBackClick();
     });

@@ -32,7 +32,6 @@ const EmployeeDetail = ({ item, status, onBackClick }) => {
       updateStaffThunk([
         itemSelected.id,
         itemSelected,
-        userSessionStorage.token,
       ])
     ).then((res) => {
       setDisableInput(true);

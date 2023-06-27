@@ -105,25 +105,24 @@ const ListParks = () => {
   const create_park = (newParkdata) => {
     // xử lý thêm
 
-    dispatch(createParkThunk([newParkdata, userSessionStorage.token])).then(
-      (res) => {
-        dispatch(getParkThunk(userSessionStorage.token)).then((res) => {
-          console.log(res.payload[0]);
-          setAddForm(false);
-          // setData(listAreas);
-          const data = {
-            name: "Camera " + (parkList.items.length + 1),
-            area: res.payload[0].id,
-            screen_v2: `https://picsum.photos/id/${
-              parkList.items.length + 1
-            }/200/300`,
-          };
-          dispatch(createCameraThunk([data, userSessionStorage.token])).then(
-            (res) => {}
-          );
-        });
-      }
-    );
+    dispatch(createParkThunk(newParkdata)).then((res) => {
+      dispatch(getParkThunk()).then((res) => {
+        // dispatch(getParkThunk(userSessionStorage.token)).then((res) => {
+        console.log(res.payload[0]);
+        setAddForm(false);
+        // setData(listAreas);
+        const data = {
+          // name: "Camera " + (parkList.items.length + 1),
+          name: "Camera " + (parkList.length + 1),
+          area: res.payload[0].id,
+          screen_v2: `https://picsum.photos/id/${
+            // parkList.items.length + 1
+            parkList.length + 1
+          }/200/300`,
+        };
+        dispatch(createCameraThunk(data)).then((res) => {});
+      });
+    });
   };
 
   const handleSelectedItem = (item, index) => {
@@ -135,14 +134,17 @@ const ListParks = () => {
     setForm(true);
   };
   const handleBackClick = () => {
-    dispatch(getParkThunk(userSessionStorage.token)).then((res) => {
+    dispatch(getParkThunk()).then((res) => {
+      // dispatch(getParkThunk(userSessionStorage.token)).then((res) => {
       setData(listAreas);
       setForm(false);
     });
   };
   useEffect(() => {
-    dispatch(getParkThunk(userSessionStorage.token));
-    dispatch(getCameraThunk(userSessionStorage.token));
+    dispatch(getParkThunk());
+    // dispatch(getParkThunk(userSessionStorage.token));
+    dispatch(getCameraThunk());
+    // dispatch(getCameraThunk(userSessionStorage.token));
   }, [dispatch]);
   return (
     <div style={{ flexBasis: "75%" }}>
@@ -153,8 +155,9 @@ const ListParks = () => {
           item={itemSelected}
           onBackClick={handleBackClick}
           idCamera={
-            cameraList?.items?.find((item) => item.area === itemSelected.id)
-              ?.id || null
+            // cameraList?.items?.find((item) => item.area === itemSelected.id)
+            cameraList?.find((item) => item.area === itemSelected.id)?.id ||
+            null
           }
         ></ParkDetail>
       ) : addForm ? (
@@ -243,7 +246,8 @@ const ListParks = () => {
               gridTemplateColumns: "auto auto auto auto",
             }}
           >
-            {parkList?.items?.map((item, index) => {
+            {parkList?.map((item, index) => {
+              // {parkList?.items?.map((item, index) => {
               return (
                 <ListItem
                   item={item}

@@ -1,11 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form, FormGroup, Label, Input, FormText } from "reactstrap";
 import "../Card/card.css";
+import { useDispatch, useSelector } from "react-redux";
+import { getCardInforThunk, getCardListThunk } from "../../store/action/action";
 const CardOut = () => {
-  const [flag, setFlag] = useState(false)
+  const [flag, setFlag] = useState(false);
+  const dispatch = useDispatch();
+  const userSessionStorage =
+    JSON.parse(sessionStorage.getItem("pocketbase_auth")) ||
+    JSON.parse(localStorage.getItem("pocketbase_auth"));
+  const [inputValue, setInputValue] = useState("");
+  const { cardList } = useSelector((state) => state.slice);
+  useEffect(() => {
+    dispatch(getCardListThunk());
+  }, [dispatch]);
+  const formData = new FormData();
+  let newData = {};
   const getData = (e) => {
-    setFlag(true)
-  }
+    newData = cardList.find((item) => item.id == inputValue);
+    setFlag(true);
+  };
+  console.log(newData);
   return (
     <div className="card-cover">
       <div className="card-left">
@@ -28,7 +43,13 @@ const CardOut = () => {
             <Form>
               <FormGroup className="getIdCard">
                 <Label for="exampleText">Nhập mã thẻ</Label>
-                <Input type="text" name="text" id="exampleText" />
+                <Input
+                  type="text"
+                  name="text"
+                  id="exampleText"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                />
               </FormGroup>
               <Button onClick={getData}>Xác nhận</Button>
             </Form>
