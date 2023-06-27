@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
 const ListItem = ({item,activateRemoveBtn,category,onClick}) => {
   // const category = category;
-  // console.log(item)
+  console.log(item)
   return category === "employee" ? (
     <div
       className="list-item"
@@ -35,14 +35,14 @@ const ListItem = ({item,activateRemoveBtn,category,onClick}) => {
       className="list-item"
       style={{ flexBasis: "18%", flexDirection: "column" }}
     >
-    <img src={item.cameraImg} alt="abc" style={{width:'150px', height:'150px'}} />
+    <img src={item.screen_v2} alt="abc" style={{width:'150px', height:'150px'}} />
       <div className="item-content">
         <div>
           <p style={{ margin: "0px" }}>
-            <span>{item.cameraName}</span>
+            <span>{item.name}</span>
           </p>
           <p style={{ margin: "0px" }}>
-            <span>{item.cameraPosition}</span>
+            <span>{item.area}</span>
           </p>
         </div>
       </div>
@@ -68,27 +68,27 @@ const ListItem = ({item,activateRemoveBtn,category,onClick}) => {
               marginBottom: "15px",
             }}
           >
-            {item.parkName}
+            {item.name}
           </h1>
           <p style={{ margin: "0px", fontWeight: "600" }}>
-            <span>Bãi {item.parkName}</span>
+            <span>Bãi {item.name}</span>
           </p>
           <p style={{ margin: "0px" }}>
             Sức chứa:
             <span style={{ color: "#0049B5", fontWeight: "600" }}>
-              {" " + item.parkCapacity}
+              {" " + item.capacity}
             </span>
           </p>
           <p style={{ margin: "0px" }}>
             Tình trạng:
             <span
               style={
-                item.parkEmpty > 0
+                item.capacity - item.size > 0
                   ? { color: "#00CD2D", fontWeight: "600" }
                   : { color: "#FF0303", fontWeight: "600" }
               }
             >
-              {item.parkEmpty > 0 ? " Còn trống" : " Hết chỗ"}
+              {item.capacity - item.size > 0 ? " Còn trống" : " Hết chỗ"}
             </span>
           </p>
         </div>

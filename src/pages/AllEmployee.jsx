@@ -7,12 +7,12 @@ import ListItem from "../components/RightComponents/List/ListItem";
 import "../styles/list.css";
 import EmployeeDetail from "./EmployeeDetail";
 import PocketBase from "pocketbase";
-
+import { useDispatch, useSelector } from "react-redux";
+import { createStaffThunk, getStaffThunk } from "../store/action/action";
 const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
 const authData = await pb
   .collection("users")
   .authWithPassword("shanenoi.org@gmail.com", "32641270013264");
-
 let listStaff = [];
 const getStaffs = async () => {
   const records = await pb.collection("users").getFullList({
@@ -31,9 +31,9 @@ const getStaffs = async () => {
       end_time: record.end_time,
       role: record.role,
     };
-    if (record.avatar !== "") {
-      stf.avatar = `https://aplonis-meln.alwaysdata.net/api/files/_pb_users_auth_/${record.id}/${record.avatar}`;
-    }
+    // if (record.avatar !== "") {
+    //   stf.avatar = `https://aplonis-meln.alwaysdata.net/api/files/_pb_users_auth_/${record.id}/${record.avatar}`;
+    // }
     listStfs.push(stf);
   });
   return listStfs;
@@ -46,6 +46,16 @@ await refreshListStaffs();
 
 // import Font
 const AllEmployee = () => {
+  const dispatch = useDispatch();
+  const { staffList } = useSelector((state) => state.slice);
+  const userSessionStorage =
+    JSON.parse(sessionStorage.getItem("pocketbase_auth")) ||
+    JSON.parse(localStorage.getItem("pocketbase_auth"));
+  useEffect(() => {
+    dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
+      console.log(res);
+    });
+  }, [dispatch]);
   const status = [
     {
       id: 1,
@@ -57,18 +67,9 @@ const AllEmployee = () => {
     },
   ];
   const [newStaffData, setNewStaffData] = useState({
-    // // id:'',
-    // staffName: "",
-    // staffId: "",
-    // staffPhone: "",
-    // staffStatus: "",
-    // staffCCCD: "",
-    // staffDayStart: "",
-    // staffAddress: "",
-    // staffDayEnd: "",
-    role: "Nhân viên",
-    username: "test_username",
-    email: "test@example.com",
+    role: "Nhân Vien",
+    username: "test_usernameahah",
+    email: "test273@example.com",
     emailVisibility: true,
     password: "12345678",
     passwordConfirm: "12345678",
@@ -101,29 +102,31 @@ const AllEmployee = () => {
       [name]: value,
     }));
   };
-  const create_staff = async (newStaffData) => {
+  const create_staff = (newStaffData) => {
     // xử lý thêm
-    console.log(newStaffData);
-    const record = await pb.collection("users").create(data);
-    await refreshListStaffs();
-    setAddForm(false);
-    //     const data = {
-    //     "username": "test_username",
-    //     "email": "test@example.com",
-    //     "emailVisibility": true,
-    //     "password": "12345678",
-    //     "passwordConfirm": "12345678",
-    //     "name": "test",
-    //     "status": "Đang làm việc",
-    //     "phone_number": "test",
-    //     "cccd": "test",
-    //     "address": "test",
-    //     "start_time": "2022-01-01 10:00:00.123Z",
-    //     "end_time": "2022-01-01 10:00:00.123Z",
-    //     "role": "Quản Lý"
-    // };
 
-    // const record = await pb.collection('users').create(data);
+    const data = {
+      username: "test_usernamehi1hi",
+      email: "test31@example.com",
+      emailVisibility: true,
+      password: "12345678",
+      passwordConfirm: "12345678",
+      name: "test",
+      status: "Đang làm việc",
+      phone_number: "test",
+      cccd: "test",
+      address: "test",
+      start_time: "2022-01-01 10:00:00.123Z",
+      end_time: "2022-01-01 10:00:00.123Z",
+      role: "Nhân Vien",
+      avatar: selectedImage,
+    };
+    dispatch(createStaffThunk([data, userSessionStorage.token])).then((res) => {
+      console.log(res);
+      dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
+        setAddForm(false);
+      });
+    });
   };
 
   const handleSelectedItem = (item, index) => {
@@ -135,10 +138,11 @@ const AllEmployee = () => {
     setForm(true);
   };
 
-  const handleBackClick = async () => {
-    setForm(false);
-    await refreshListStaffs();
-    setData(listStaff);
+  const handleBackClick = () => {
+    dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
+      setForm(false);
+      setData(listStaff);
+    });
   };
 
   const handleImageSelect = () => {
@@ -155,12 +159,13 @@ const AllEmployee = () => {
 
     if (file) {
       reader.readAsDataURL(file);
+      // reader.readAsArrayBuffer(file);
     }
   };
   useEffect(() => {
     setNewStaffData((preData) => ({
       ...preData,
-      avatar: selectedImage,
+      // avatar: selectedImage,
       start_time: "2022-01-01 10:00:00",
       end_time: "2022-01-01 10:00:00",
     }));
@@ -294,7 +299,7 @@ const AllEmployee = () => {
                     name="role"
                     id="exampleText"
                     onChange={handleChange}
-                    value={"Nhân viên"}
+                    value={"Nhân Vien"}
                     // disabled={disable}
                   />
                 </FormGroup>
@@ -322,7 +327,7 @@ const AllEmployee = () => {
             addBtn_on={true}
           />
           <div className="body-list">
-            {data.map((item, index) => {
+            {staffList?.items?.map((item, index) => {
               return (
                 <ListItem
                   item={item}

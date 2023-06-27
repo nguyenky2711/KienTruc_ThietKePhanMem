@@ -2,16 +2,18 @@ import React, { useEffect, useState } from "react";
 
 import { Button, Form, FormGroup, Label, Input, FormText } from "reactstrap";
 import PocketBase from "pocketbase";
+import { useDispatch } from "react-redux";
+import {
+  deleteCameraThunk,
+  deleteParkThunk,
+  updateParkThunk,
+} from "../store/action/action";
 
-const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
-const authData = await pb
-  .collection("users")
-  .authWithPassword("shanenoi.org@gmail.com", "32641270013264");
-
-const ParkDetail = ({ item, onBackClick }) => {
+const ParkDetail = ({ item, idCamera, onBackClick }) => {
+  console.log(idCamera);
   const [disableInput, setDisableInput] = useState(true);
   const [itemSelected, setItemSelected] = useState(item);
-  console.log(itemSelected)
+  console.log(itemSelected);
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     if (!disableInput) {
@@ -21,29 +23,40 @@ const ParkDetail = ({ item, onBackClick }) => {
       }));
     }
   };
+  const dispatch = useDispatch();
+  const userSessionStorage =
+    JSON.parse(sessionStorage.getItem("pocketbase_auth")) ||
+    JSON.parse(localStorage.getItem("pocketbase_auth"));
   const handleDeletePark = async (itemSelected) => {
     // xử lý xoá
-    await pb.collection('areas').delete(itemSelected.id);
-    onBackClick();
-
+    dispatch(deleteCameraThunk([idCamera, userSessionStorage.token])).then(
+      (res) => {
+        dispatch(
+          deleteParkThunk([itemSelected.id, userSessionStorage.token])
+        ).then((res) => {
+          onBackClick();
+        });
+      }
+    );
   };
-  const handleChangePark = async (itemSelected) => {
+  const handleChangePark = (itemSelected) => {
     //xử lý sửa
     let updateData = {
-      name: itemSelected.parkName,
-      code: itemSelected.parkID,
-      price: itemSelected.parkCostHire,
-      size: itemSelected.parkContained,
+      name: itemSelected.name,
+      code: itemSelected.code,
+      price: itemSelected.price,
+      size: itemSelected.size,
       id: itemSelected.id,
-    }
-    console.log(itemSelected);
-    const updateRecord = await pb
-      .collection("areas")
-      .update(itemSelected.id, updateData);
+      capacity: itemSelected.capacity,
+    };
+    dispatch(
+      updateParkThunk([itemSelected.id, updateData, userSessionStorage.token])
+    ).then((res) => {
       setDisableInput(true);
-    onBackClick();
+      onBackClick();
+    });
   };
-  const parkEmpty = itemSelected.parkCapacity - itemSelected.parkContained;
+  const parkEmpty = itemSelected.capacity - itemSelected.size;
   return (
     <div className="form-cover">
       <h1>Thông tin bãi xe</h1>
@@ -57,7 +70,7 @@ const ParkDetail = ({ item, onBackClick }) => {
                 name="parkName"
                 id="exampleText"
                 onChange={handleInputChange}
-                value={itemSelected.parkName}
+                value={itemSelected.name}
                 disabled={disableInput}
               />
             </FormGroup>
@@ -65,10 +78,10 @@ const ParkDetail = ({ item, onBackClick }) => {
               <Label for="exampleText">Sức chứa tối đa</Label>
               <Input
                 type="number"
-                name="parkCapacity"
+                name="capacity"
                 id="exampleText"
                 onChange={handleInputChange}
-                value={itemSelected.parkCapacity}
+                value={itemSelected.capacity}
                 disabled={disableInput}
               />
             </FormGroup>
@@ -76,10 +89,10 @@ const ParkDetail = ({ item, onBackClick }) => {
               <Label for="exampleText">Mã bãi</Label>
               <Input
                 type="text"
-                name="parkID"
+                name="code"
                 id="exampleText"
                 onChange={handleInputChange}
-                value={itemSelected.parkID}
+                value={itemSelected.code}
                 disabled={disableInput}
               />
             </FormGroup>
@@ -87,10 +100,10 @@ const ParkDetail = ({ item, onBackClick }) => {
               <Label for="exampleText">Đã chứa</Label>
               <Input
                 type="number"
-                name="parkContained"
+                name="size"
                 id="exampleText"
                 onChange={handleInputChange}
-                value={itemSelected.parkContained}
+                value={itemSelected.size}
                 disabled={disableInput}
               />
             </FormGroup>
@@ -98,10 +111,10 @@ const ParkDetail = ({ item, onBackClick }) => {
               <Label for="exampleText">Giá thuê bãi/ngày</Label>
               <Input
                 type="number"
-                name="parkCostHire"
+                name="price"
                 id="exampleText"
                 onChange={handleInputChange}
-                value={itemSelected.parkCostHire}
+                value={itemSelected.price}
                 disabled={disableInput}
               />
             </FormGroup>
