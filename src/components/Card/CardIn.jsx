@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Form, FormGroup, Label, Input, FormText } from "reactstrap";
 import "../Card/card.css";
-import VideoCaptureComponent from "../VideoCaptureComponent";
 import video from "../../../src/Download.mp4";
 import { useDispatch, useSelector } from "react-redux";
 import { createCardInforThunk, getParkThunk } from "../../store/action/action";
@@ -33,20 +32,21 @@ const CardIn = () => {
   const dispatch = useDispatch();
   const { parkList } = useSelector((state) => state.slice);
   const userSessionStorage =
-    JSON.parse(sessionStorage.getItem('pocketbase_auth')) ||
-    JSON.parse(localStorage.getItem('pocketbase_auth'));
-  console.log(userSessionStorage)
+    JSON.parse(sessionStorage.getItem("pocketbase_auth")) ||
+    JSON.parse(localStorage.getItem("pocketbase_auth"));
+  console.log(userSessionStorage);
   useEffect(() => {
     // dispatch(getParkThunk([userSessionStorage.token]));
     dispatch(getParkThunk());
   }, [dispatch]);
   const getPic = (e) => {
     // e.prevent
-    // const randomImageUrl = `https://picsum.photos/300/300?random=${Math.random()}`;
-    // setImgUrl(randomImageUrl);
     handleCapture();
-    const currentDateTime = new Date().toLocaleString();
-    // setDateTime(currentDateTime);
+    // const currentDateTime = new Date().toLocaleString();
+    const { format } = require("date-fns");
+
+    const currentDateTime = format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS'Z'");
+
     setInputValues((prevInputValues) => ({
       ...prevInputValues,
       timeIn: currentDateTime,
@@ -68,7 +68,7 @@ const CardIn = () => {
       // check_in: formData.timeIn,
       check_in: "2022-01-01 10:00:00.123Z",
       check_out: "",
-      check_in_img: "https://example.com",
+      check_in_img: imgRef.current.src,
       check_out_img: "https://example.com",
       area_id: formData.park,
     };
@@ -86,7 +86,7 @@ const CardIn = () => {
     canvas.height = video.videoHeight;
     canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
     const capturedImageURL = canvas.toDataURL();
-    console.log(capturedImageURL)
+    console.log(capturedImageURL);
     imgRef.current.src = capturedImageURL;
   };
 
@@ -94,27 +94,49 @@ const CardIn = () => {
     setShowVideo(true);
   };
 
-// console.log(imgRef)
-  
+  // console.log(imgRef)
+
   return (
     <div className="card-cover">
       <div className="card-left">
-        <p>Hình ảnh lúc vào</p>
         <div className="in-cover">
           <div className="in-pic_item">
             <p>Camera </p>
             {/* <img className="in-pic_1" src={imgUrl}></img> */}
             {/* <VideoCapture videoSource={video}></VideoCapture> */}
-            {showVideo && (
-              <video ref={videoRef} autoPlay loop style={{width:'150px',height:'150px', objectFit:"cover"}}>
-                <source src={video} type="video/mp4"/>
-              </video>
-            )}
+            <div
+              style={{
+                width: "220px",
+                height: "220px",
+                background: "#C4C4C4",
+              }}
+            >
+              {showVideo && (
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  loop
+                  style={{
+                    width: "220px",
+                    height: "220px",
+                    objectFit: "cover",
+                    background: "#C4C4C4",
+                  }}
+                >
+                  <source src={video} type="video/mp4" />
+                </video>
+              )}
+            </div>
           </div>
           <div className="in-pic_item">
             <p>Hình ảnh vào</p>
             {/* <img className="in-pic_2" src={imgUrl}></img> */}
-            <img className="in-pic_2" ref={imgRef} alt="Captured" style={{width:'150px',height:'150px'}}/>
+            <img
+              className="in-pic_2"
+              ref={imgRef}
+              alt=""
+              style={{ width: "220px", height: "220px", background: "#C4C4C4" }}
+            />
           </div>
         </div>
       </div>
@@ -173,7 +195,7 @@ const CardIn = () => {
                 onChange={handleChange}
               >
                 {parkList?.map((item, index) => {
-                // {parkList?.items?.map((item, index) => {
+                  // {parkList?.items?.map((item, index) => {
                   return (
                     <option key={index} value={item.id}>
                       {item.name}
@@ -183,35 +205,20 @@ const CardIn = () => {
               </Input>
             </FormGroup>
             <FormGroup className="btnGroup">
-              <Button onClick={getPic} >Chụp</Button>
-              {showButton &&  (
+              <Button onClick={getPic}>Chụp</Button>
+              {showButton && (
                 <Button onClick={() => handleSubmit(inputValues)}>
                   Xác nhận
                 </Button>
               )}
-              {!showButton &&  (
-                <Button onClick={() => handleGetInfo()}>
-                  Lấy thông tin
-                </Button>
+              {!showButton && (
+                <Button onClick={() => handleGetInfo()}>Lấy thông tin</Button>
               )}
             </FormGroup>
           </Form>
         </div>
       </div>
-      <div>
-        {/* <button onClick={handleCapture}>Chụp ảnh</button> */}
-        {/* <button onClick={handleGetInfo}>Lấy thông tin</button> */}
-        {/* <div>
-          {showVideo && (
-            <video ref={videoRef} autoPlay loop>
-              <source src={video} type="video/mp4" />
-            </video>
-          )}
-          <img ref={imgRef} alt="Captured" />
-        </div> */}
-        
-      </div>
-      {/* <VideoCaptureComponent video={video}/> */}
+      <div></div>
     </div>
   );
 };

@@ -211,7 +211,7 @@ const AllEmployee = () => {
     document.getElementById("fileInput").click();
   };
   return (
-    <div className="container-list" style={{ flexBasis: "75%" }}>
+    <div className="container-list" style={{ flexBasis: "70%" }}>
       <SearchTitle title={"Quản lý nhân viên"} search={true} />
 
       {form ? (
@@ -363,7 +363,7 @@ const AllEmployee = () => {
             object={"Nhân viên"}
             handleRemove={handleRemove}
             handleAdd={handleAdd}
-            removeBtn_on={true}
+            removeBtn_on={false}
             addBtn_on={true}
           />
           <div className="body-list">

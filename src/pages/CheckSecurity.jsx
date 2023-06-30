@@ -27,7 +27,7 @@ const CheckSecurity = () => {
           removeBtn_on={false}
           addBtn_on={false}
         />
-        <div className="body-list">
+        <div className="body-list" style={{display: 'grid', gridTemplateColumns: 'auto auto auto auto'}}>
           {cameraList?.map((item, index) => {
           // {cameraList?.items?.map((item, index) => {
             return (

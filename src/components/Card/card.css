@@ -6,8 +6,26 @@
 .card-left {
   flex-basis: 50%;
   height: 100%;
+  margin-top: 15px;
 }
-.card-left > p {
+.in-cover {
+  /* background-color: #c4c4c4; */
+  height: 300px;
+  display: flex;
+  justify-content: space-between;
+}
+.in-pic_item  {
+  width: 220px;
+}
+.in-pic_item  > p {
+  text-align: center;
+  background-color: #3c8aff;
+  border-radius: 8px 8px 0px 0px;
+  padding: 8px 14px;
+  color: white;
+  margin: 0px;
+}
+/* .card-left > p {
   text-align: center;
   background-color: #3c8aff;
   color: white;
@@ -29,7 +47,7 @@
 }
 .in-pic_item > img {
   border-radius: 8px;
-}
+} */
 .card-right {
   flex-basis: 35%;
   height: 100%;

@@ -7,35 +7,35 @@ import PocketBase from "pocketbase";
 import { useDispatch, useSelector } from "react-redux";
 import { createCostThunk, getCostThunk } from "../store/action/action";
 
-const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
-const authData = await pb
-  .collection("users")
-  .authWithPassword("shanenoi.org@gmail.com", "32641270013264");
+// const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
+// const authData = await pb
+//   .collection("users")
+//   .authWithPassword("shanenoi.org@gmail.com", "32641270013264");
 
-let listPrices = [];
+// let listPrices = [];
 
-const getPrices = async () => {
-  const records = await pb
-    .collection("prices")
-    .getFullList({ sort: "-created" });
-  let listPrs = [];
-  records.forEach((record) => {
-    const price = {
-      id: record.id,
-      type: record.transport_type,
-      time: record.time,
-      price: record.price,
-    };
-    listPrs.push(price);
-  });
-  return listPrs;
-};
+// const getPrices = async () => {
+//   const records = await pb
+//     .collection("prices")
+//     .getFullList({ sort: "-created" });
+//   let listPrs = [];
+//   records.forEach((record) => {
+//     const price = {
+//       id: record.id,
+//       type: record.transport_type,
+//       time: record.time,
+//       price: record.price,
+//     };
+//     listPrs.push(price);
+//   });
+//   return listPrs;
+// };
 
-const refreshListPrices = async () => {
-  listPrices = await getPrices();
-};
+// const refreshListPrices = async () => {
+//   listPrices = await getPrices();
+// };
 
-await refreshListPrices();
+// await refreshListPrices();
 const CostSetting = () => {
   const typeData = [
     {
@@ -61,7 +61,7 @@ const CostSetting = () => {
       value: "18:00 - 06:00",
     },
   ];
-  const [data, setData] = useState(listPrices);
+  // const [data, setData] = useState(listPrices);
   const [newCostData, setNewCostData] = useState({
     id: "",
     transport_type: "Xe máy",
@@ -95,7 +95,7 @@ const CostSetting = () => {
     dispatch(createCostThunk(newCostData)).then((res) =>
       // dispatch(getCostThunk([userSessionStorage.token])).then((res) => {
       dispatch(getCostThunk()).then((res) => {
-        setData(listPrices);
+        // setData(listPrices);
         setAddForm(false);
       })
     );
@@ -114,7 +114,7 @@ const CostSetting = () => {
     dispatch(getCostThunk()).then((res) => {
       setForm(false);
 
-      setData(listPrices);
+      // setData(listPrices);
     });
   };
 
