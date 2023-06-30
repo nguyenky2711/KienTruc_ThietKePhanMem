@@ -34,7 +34,7 @@ const NavBar = () => {
         <div className="menu">
           {nav__links.map((item, index) => (
             <NavLink
-              to={item.path}
+              to={`/layout${item.path}`}
               key={index}
               className={(navClass) => (navClass.isActive ? "active__btn" : "")}
             >

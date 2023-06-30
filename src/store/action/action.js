@@ -553,6 +553,12 @@ export const createCardInforThunk = createAsyncThunk(
 //             });
 //     }
 // );
-
+export const updateCardThunk = createAsyncThunk(
+    'card/updateCardThunk',
+    async (args) => {
+        const res = await pb.collection('attendances').update(args[0], args[1]);
+        return res;
+    }
+);
 
 

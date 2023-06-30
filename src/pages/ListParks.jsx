@@ -16,37 +16,37 @@ import {
   getParkThunk,
 } from "../store/action/action";
 
-const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
-const authData = await pb
-  .collection("users")
-  .authWithPassword("shanenoi.org@gmail.com", "32641270013264");
+// const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
+// const authData = await pb
+//   .collection("users")
+//   .authWithPassword("shanenoi.org@gmail.com", "32641270013264");
 
-let listAreas = [];
-const getAreas = async () => {
-  const records = await pb
-    .collection("areas")
-    .getFullList({ sort: "-created" });
-  let listAs = [];
-  records.forEach((record) => {
-    console.log(record);
-    let a = {
-      id: record.id,
-      parkName: record.name,
-      parkID: record.code,
-      parkCapacity: record.capacity,
-      parkContained: record.size,
-      parkEmpty: record.capacity - record.size,
-      parkCostHire: record.price,
-    };
-    listAs.push(a);
-  });
-  return listAs;
-};
-const refreshListAreas = async () => {
-  listAreas = await getAreas();
-};
+// let listAreas = [];
+// const getAreas = async () => {
+//   const records = await pb
+//     .collection("areas")
+//     .getFullList({ sort: "-created" });
+//   let listAs = [];
+//   records.forEach((record) => {
+//     console.log(record);
+//     let a = {
+//       id: record.id,
+//       parkName: record.name,
+//       parkID: record.code,
+//       parkCapacity: record.capacity,
+//       parkContained: record.size,
+//       parkEmpty: record.capacity - record.size,
+//       parkCostHire: record.price,
+//     };
+//     listAs.push(a);
+//   });
+//   return listAs;
+// };
+// const refreshListAreas = async () => {
+//   listAreas = await getAreas();
+// };
 
-await refreshListAreas();
+// await refreshListAreas();
 
 const ListParks = () => {
   const typeData = [
@@ -73,7 +73,7 @@ const ListParks = () => {
       value: "18:00 - 06:00",
     },
   ];
-  const [data, setData] = useState(listAreas);
+  // const [data, setData] = useState(listAreas);
   const [newParkdata, setNewParkData] = useState({
     name: "",
     code: "",
@@ -136,7 +136,7 @@ const ListParks = () => {
   const handleBackClick = () => {
     dispatch(getParkThunk()).then((res) => {
       // dispatch(getParkThunk(userSessionStorage.token)).then((res) => {
-      setData(listAreas);
+      // setData(listAreas);
       setForm(false);
     });
   };
@@ -162,7 +162,7 @@ const ListParks = () => {
         ></ParkDetail>
       ) : addForm ? (
         <div className="form-cover">
-          <h1>Thêm chi phí</h1>
+          <h1>Thêm bãi xe</h1>
           <div className="staff-infor">
             <div className="infor">
               <Form className="">

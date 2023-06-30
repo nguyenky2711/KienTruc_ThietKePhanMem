@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
 const ListItem = ({item,activateRemoveBtn,category,onClick}) => {
   // const category = category;
-  // console.log(item)
+  const urlAvatar = `https://aplonis-meln.alwaysdata.net/api/files/_pb_users_auth_/${item.id}/${item.avatar}`
   return category === "employee" ? (
     <div
       className="list-item"
@@ -12,7 +12,7 @@ const ListItem = ({item,activateRemoveBtn,category,onClick}) => {
       onClick={onClick}
     >
       <img
-        src={item.avatar}
+        src={urlAvatar}
         alt=""
         style={{ width: "65px", height: "65px", borderRadius: "50%" }}
       />

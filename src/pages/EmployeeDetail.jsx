@@ -23,26 +23,25 @@ const EmployeeDetail = ({ item, status, onBackClick }) => {
       setItemSelected((prevItem) => ({
         ...prevItem,
         [name]: value,
+        end_time: status == "Đang làm việc" ? "" : new Date(),
       }));
     }
   };
-  const handleChangeStaff =  (itemSelected) => {
+  const handleChangeStaff = (itemSelected) => {
     // console.log('item');
-    dispatch(
-      updateStaffThunk([
-        itemSelected.id,
-        itemSelected,
-      ])
-    ).then((res) => {
+    dispatch(updateStaffThunk([itemSelected.id, itemSelected])).then((res) => {
       setDisableInput(true);
       onBackClick();
     });
   };
+  const urlAvatar = `https://aplonis-meln.alwaysdata.net/api/files/_pb_users_auth_/${itemSelected.id}/${itemSelected.avatar}`;
   return (
     <div className="form-cover">
+      <h1>Thông tin người dùng</h1>
+
       <div className="staff-infor">
         <img
-          src={itemSelected.avatar}
+          src={urlAvatar}
           alt=""
           style={{ width: "150px", height: "150px" }}
         />
@@ -127,7 +126,7 @@ const EmployeeDetail = ({ item, status, onBackClick }) => {
                 id="exampleText"
                 onChange={handleInputChange}
                 value={itemSelected.end_time}
-                disabled={disableInput}
+                disabled
               />
             </FormGroup>
             <FormGroup className="infor-item">
