@@ -132,7 +132,7 @@ class CameraCRUD extends BaseCRUD {
     }
     // The method for getting the collection name of a camera
     collect() {
-        return "prices";
+        return "cameras";
     }
     // The method for getting the list of cameras
     async getList(page, perPage, queryParams) {
@@ -171,7 +171,7 @@ class AttendanceCRUD extends BaseCRUD {
     }
     // The method for getting the collection name of an attendance
     collect() {
-        return "prices";
+        return "attendances";
     }
     // The method for getting the list of Attendances
     async getList(page, perPage, queryParams) {

@@ -1,36 +1,59 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+// import axios from 'axios';
 import PocketBase from "pocketbase";
-import axios from 'axios';
+import {CreateCRUD} from "../../pkg/api/crud.mjs";
+import {createAsyncThunk} from '@reduxjs/toolkit';
 
 const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
-const baseURL = 'https://aplonis-meln.alwaysdata.net';
+// const baseURL = 'https://aplonis-meln.alwaysdata.net';
 const authData = await pb
     .collection("users")
     .authWithPassword("shanenoi.org@gmail.com", "32641270013264");
 
+const EmployeeCRUD = CreateCRUD(pb, 'employee');
+const ParkCRUD = CreateCRUD(pb, 'park');
+const CostCRUD = CreateCRUD(pb, 'cost');
+const CameraCRUD = CreateCRUD(pb, 'camera');
+const AttendanceCRUD = CreateCRUD(pb, 'attendance');
+
+const isEnableFactoryCRUD = () => {
+    return localStorage.getItem('isEnableFactoryCRUD') === 'true'
+}
+
+
 export const getStaffThunk = createAsyncThunk(
     'staff/getStaffThunk',
     async (args) => {
-        const res = await pb.collection('users').getFullList({
-            sort: '-created',
-        })
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return await EmployeeCRUD.getFullList({
+                sort: '-created',
+            })
+        } else {
+            return await pb.collection('users').getFullList({
+                sort: '-created',
+            });
+        }
     }
 );
 
 export const createStaffThunk = createAsyncThunk(
     'staff/createStaffThunk',
     async (args) => {
-        const res = await pb.collection('users').create(args)
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return EmployeeCRUD.create(args);
+        } else {
+            return await pb.collection('users').create(args);
+        }
     }
 );
 
 export const updateStaffThunk = createAsyncThunk(
     'staff/updateStaffThunk',
     async (args) => {
-        const res = await pb.collection('users').update(args[0], args[1]);
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return EmployeeCRUD.update(args[0], args[1]);
+        } else {
+            return await pb.collection('users').update(args[0], args[1]);
+        }
     }
 );
 // export const createStaffThunk = createAsyncThunk(
@@ -105,34 +128,46 @@ export const updateStaffThunk = createAsyncThunk(
 export const getCostThunk = createAsyncThunk(
     'cost/getCostThunk',
     async (args) => {
-        const res = await pb
-            .collection("prices")
-            .getFullList({ sort: "-created" });
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return CostCRUD.getFullList({sort: "-created"});
+        } else {
+            return await pb
+                .collection("prices")
+                .getFullList({sort: "-created"});
+        }
     }
 );
 
 export const createCostThunk = createAsyncThunk(
     'cost/createCostThunk',
     async (args) => {
-        const res = await pb.collection("prices").create(args);
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return CostCRUD.create(args);
+        } else {
+            return await pb.collection("prices").create(args);
+        }
     }
 );
 
 export const updateCostThunk = createAsyncThunk(
     'cost/updateCostThunk',
     async (args) => {
-        const res = await pb.collection('prices').update(args[0], args[1]);
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return CostCRUD.update(args[0], args[1]);
+        } else {
+            return await pb.collection('prices').update(args[0], args[1]);
+        }
     }
 );
 
 export const deleteCostThunk = createAsyncThunk(
     'cost/deleteCostThunk',
     async (args) => {
-        const res = await pb.collection('prices').delete(args);
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return CostCRUD.delete(args);
+        } else {
+            return await pb.collection('prices').delete(args);
+        }
     }
 );
 
@@ -231,31 +266,43 @@ export const deleteCostThunk = createAsyncThunk(
 export const getParkThunk = createAsyncThunk(
     'park/getParkThunk',
     async (args) => {
-        const res = await pb
-            .collection("areas")
-            .getFullList({ sort: "-created" });
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return ParkCRUD.getFullList({sort: "-created"});
+        } else {
+            return await pb
+                .collection("areas")
+                .getFullList({sort: "-created"});
+        }
     }
 );
 export const createParkThunk = createAsyncThunk(
     'park/createParkThunk',
     async (args) => {
-        const res = await pb.collection("areas").create(args);
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return ParkCRUD.create(args);
+        } else {
+            return await pb.collection("areas").create(args);
+        }
     }
 );
 export const updateParkThunk = createAsyncThunk(
     'park/updateParkThunk',
     async (args) => {
-        const res = await pb.collection('areas').update(args[0], args[1]);
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return ParkCRUD.update(args[0], args[1]);
+        } else {
+            return await pb.collection('areas').update(args[0], args[1]);
+        }
     }
 );
 export const deleteParkThunk = createAsyncThunk(
     'park/deleteParkThunk',
     async (args) => {
-        const res = await pb.collection('areas').delete(args);
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return ParkCRUD.delete(args);
+        } else {
+            return await pb.collection('areas').delete(args);
+        }
     }
 );
 
@@ -354,34 +401,46 @@ export const deleteParkThunk = createAsyncThunk(
 export const getCameraThunk = createAsyncThunk(
     'camera/getCameraThunk',
     async (args) => {
-        const res = await pb
-            .collection("cameras")
-            .getFullList({ sort: "-created" });
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return CameraCRUD.getFullList({sort: "-created"});
+        } else {
+            return await pb
+                .collection("cameras")
+                .getFullList({sort: "-created"});
+        }
     }
 );
 
 export const createCameraThunk = createAsyncThunk(
     'camera/createCameraThunk',
     async (args) => {
-        const res = await pb.collection("cameras").create(args);
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return CameraCRUD.create(args);
+        } else {
+            return await pb.collection("cameras").create(args);
+        }
     }
 );
 
 export const updateCameraThunk = createAsyncThunk(
     'camera/updateCameraThunk',
     async (args) => {
-        const res = await pb.collection('cameras').update(args[0], args[1]);
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return CameraCRUD.update(args[0], args[1]);
+        } else {
+            return await pb.collection('cameras').update(args[0], args[1]);
+        }
     }
 );
 
 export const deleteCameraThunk = createAsyncThunk(
     'camera/deleteCameraThunk',
     async (args) => {
-        const res = await pb.collection('cameras').delete(args);
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return CameraCRUD.delete(args);
+        } else {
+            return await pb.collection('cameras').delete(args);
+        }
     }
 );
 
@@ -483,28 +542,33 @@ export const deleteCameraThunk = createAsyncThunk(
 export const getUserInforThunk = createAsyncThunk(
     'user/getUserInforThunk',
     async (args) => {
-        const res = await pb
+        return await pb
             .collection("users")
-            .authWithPassword(args[0], args[1])
-        return res;
+            .authWithPassword(args[0], args[1]);
     }
 );
 // ======================================== //
 export const getCardListThunk = createAsyncThunk(
     'card/getCardListThunk',
     async (args) => {
-        const res = await pb.collection('attendances').getFullList({
-            sort: '-created',
-        });
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return AttendanceCRUD.getFullList({sort: '-created'});
+        } else {
+            return await pb.collection('attendances').getFullList({
+                sort: '-created',
+            });
+        }
     }
 );
 
 export const createCardInforThunk = createAsyncThunk(
     'card/createCardInforThunk',
     async (args) => {
-        const res = await pb.collection('attendances').create(args);
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return AttendanceCRUD.create(args);
+        } else {
+            return await pb.collection('attendances').create(args);
+        }
     }
 );
 // export const createCardInforThunk = createAsyncThunk(
@@ -556,9 +620,10 @@ export const createCardInforThunk = createAsyncThunk(
 export const updateCardThunk = createAsyncThunk(
     'card/updateCardThunk',
     async (args) => {
-        const res = await pb.collection('attendances').update(args[0], args[1]);
-        return res;
+        if (isEnableFactoryCRUD()) {
+            return AttendanceCRUD.update(args[0], args[1]);
+        } else {
+            return await pb.collection('attendances').update(args[0], args[1]);
+        }
     }
 );
-
-

@@ -257,7 +257,7 @@ class CameraCRUD extends BaseCRUD<ICamera> {
 
     // The method for getting the collection name of a camera
     collect(): string {
-        return "prices";
+        return "cameras";
     }
 
     // The method for getting the list of cameras
@@ -305,7 +305,7 @@ class AttendanceCRUD extends BaseCRUD<IAttendance> {
 
     // The method for getting the collection name of an attendance
     collect(): string {
-        return "prices";
+        return "attendances";
     }
 
     // The method for getting the list of Attendances
