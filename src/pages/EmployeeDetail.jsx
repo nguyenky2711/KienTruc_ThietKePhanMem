@@ -4,6 +4,12 @@ import { useDispatch } from "react-redux";
 
 import { Form, FormGroup, Input, Label } from "reactstrap";
 import { updateStaffThunk } from "../store/action/action";
+
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
+import "moment/locale/vi"; // Import locale của Việt Nam hoặc locale tương ứng
+import { format, parseISO } from "date-fns";
 const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
 const authData = await pb
   .collection("users")
@@ -23,18 +29,26 @@ const EmployeeDetail = ({ item, status, onBackClick }) => {
       setItemSelected((prevItem) => ({
         ...prevItem,
         [name]: value,
-        end_time: status == "Đang làm việc" ? "" : new Date(),
+        end_time: format(endDate, "yyyy-MM-dd HH:mm:ss.SSS'Z'"),
       }));
     }
   };
   const handleChangeStaff = (itemSelected) => {
-    // console.log('item');
+    console.log(itemSelected);
     dispatch(updateStaffThunk([itemSelected.id, itemSelected])).then((res) => {
       setDisableInput(true);
       onBackClick();
     });
   };
   const urlAvatar = `https://aplonis-meln.alwaysdata.net/api/files/_pb_users_auth_/${itemSelected.id}/${itemSelected.avatar}`;
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const handleChangeStartDate = (date) => {
+    setStartDate(date);
+  };
+  const handleChangeEndDate = (date) => {
+    setEndDate(date);
+  };
   return (
     <div className="form-cover">
       <h1>Thông tin người dùng</h1>
@@ -98,13 +112,12 @@ const EmployeeDetail = ({ item, status, onBackClick }) => {
             </FormGroup>
             <FormGroup className="infor-item">
               <Label for="exampleText">Ngày bắt đầu đi làm</Label>
-              <Input
-                type="text"
-                name="start_time"
-                id="exampleText"
-                onChange={handleInputChange}
-                value={itemSelected.start_time}
-                disabled={disableInput}
+              <DatePicker
+                selected={startDate}
+                onChange={handleChangeStartDate}
+                dateFormat="yyyy-MM-dd HH:mm:ss.SSS[Z]"
+                value={moment(startDate).format("yyyy-MM-dd HH:mm:ss.SSS[Z]")}
+                // minDate={new Date()}
               />
             </FormGroup>
             <FormGroup className="infor-item">
@@ -120,13 +133,17 @@ const EmployeeDetail = ({ item, status, onBackClick }) => {
             </FormGroup>
             <FormGroup className="infor-item">
               <Label for="exampleText">Ngày kết thúc làm việc</Label>
-              <Input
-                type="text"
-                name="end_time"
-                id="exampleText"
-                onChange={handleInputChange}
-                value={itemSelected.end_time}
-                disabled
+              <DatePicker
+                selected={endDate}
+                onChange={handleChangeEndDate}
+                dateFormat="yyyy-mm-dd hh:mm:ss.SSS[z]"
+                value={
+                  itemSelected.status != "Đang làm việc"
+                    ? moment(endDate).format("yyyy-mm-dd hh:mm:ss.SSS[z]")
+                    : ""
+                }
+                minDate={new Date()}
+                disabled={itemSelected.status == "Đang làm việc"}
               />
             </FormGroup>
             <FormGroup className="infor-item">

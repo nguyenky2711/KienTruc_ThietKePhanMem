@@ -1,7 +1,7 @@
 // import axios from 'axios';
 import PocketBase from "pocketbase";
-import {CreateCRUD} from "../../pkg/api/crud.mjs";
-import {createAsyncThunk} from '@reduxjs/toolkit';
+import { CreateCRUD } from "../../pkg/api/crud.mjs";
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
 const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
 // const baseURL = 'https://aplonis-meln.alwaysdata.net';
@@ -129,11 +129,11 @@ export const getCostThunk = createAsyncThunk(
     'cost/getCostThunk',
     async (args) => {
         if (isEnableFactoryCRUD()) {
-            return CostCRUD.getFullList({sort: "-created"});
+            return CostCRUD.getFullList({ sort: "-created" });
         } else {
             return await pb
                 .collection("prices")
-                .getFullList({sort: "-created"});
+                .getFullList({ sort: "-created" });
         }
     }
 );
@@ -267,11 +267,11 @@ export const getParkThunk = createAsyncThunk(
     'park/getParkThunk',
     async (args) => {
         if (isEnableFactoryCRUD()) {
-            return ParkCRUD.getFullList({sort: "-created"});
+            return ParkCRUD.getFullList({ sort: "-created" });
         } else {
             return await pb
                 .collection("areas")
-                .getFullList({sort: "-created"});
+                .getFullList({ sort: "-created" });
         }
     }
 );
@@ -402,11 +402,11 @@ export const getCameraThunk = createAsyncThunk(
     'camera/getCameraThunk',
     async (args) => {
         if (isEnableFactoryCRUD()) {
-            return CameraCRUD.getFullList({sort: "-created"});
+            return CameraCRUD.getFullList({ sort: "-created", expand: "area" });
         } else {
             return await pb
                 .collection("cameras")
-                .getFullList({sort: "-created"});
+                .getFullList({ sort: "-created", expand: "area" });
         }
     }
 );
@@ -552,7 +552,7 @@ export const getCardListThunk = createAsyncThunk(
     'card/getCardListThunk',
     async (args) => {
         if (isEnableFactoryCRUD()) {
-            return AttendanceCRUD.getFullList({sort: '-created'});
+            return AttendanceCRUD.getFullList({ sort: '-created' });
         } else {
             return await pb.collection('attendances').getFullList({
                 sort: '-created',

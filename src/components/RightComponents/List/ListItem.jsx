@@ -2,19 +2,22 @@ import React from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
-const ListItem = ({item,activateRemoveBtn,category,onClick}) => {
+const ListItem = ({ item, activateRemoveBtn, category, onClick }) => {
   // const category = category;
-  const urlAvatar = `https://aplonis-meln.alwaysdata.net/api/files/_pb_users_auth_/${item.id}/${item.avatar}`
+  // console.log(item)
+  const urlAvatar = `https://aplonis-meln.alwaysdata.net/api/files/_pb_users_auth_/${item.id}/${item.avatar}`;
   return category === "employee" ? (
-    <div
-      className="list-item"
-      style={{ flexBasis: "35%" }}
-      onClick={onClick}
-    >
+    <div className="list-item" style={{ flexBasis: "35%" }}>
       <img
         src={urlAvatar}
         alt=""
-        style={{ width: "65px", height: "65px", borderRadius: "50%" }}
+        style={{
+          width: "65px",
+          height: "65px",
+          borderRadius: "50%",
+          cursor: "pointer",
+        }}
+        onClick={onClick}
       />
       <div className="item-content">
         <div>
@@ -35,14 +38,18 @@ const ListItem = ({item,activateRemoveBtn,category,onClick}) => {
       className="list-item"
       style={{ flexBasis: "18%", flexDirection: "column" }}
     >
-    <img src={item.screen_v2} alt="abc" style={{width:'150px', height:'150px'}} />
+      <img
+        src={item.screen_v2}
+        alt="abc"
+        style={{ width: "150px", height: "150px" }}
+      />
       <div className="item-content">
         <div>
           <p style={{ margin: "0px" }}>
             <span>{item.name}</span>
           </p>
           <p style={{ margin: "0px" }}>
-            <span>{item.area}</span>
+            <span>Bãi: {item.expand?.area?.name}</span>
           </p>
         </div>
       </div>
