@@ -107,7 +107,7 @@ const ParkDetail = ({ item, idCamera, onBackClick }) => {
                 id="exampleText"
                 onChange={handleInputChange}
                 value={itemSelected.size}
-                disabled={disableInput}
+                disabled
               />
             </FormGroup>
             <FormGroup className="infor-item">

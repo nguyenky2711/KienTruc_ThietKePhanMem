@@ -199,7 +199,7 @@ const ListParks = () => {
                     // disabled={disable}
                   />
                 </FormGroup>
-                <FormGroup className="infor-item">
+                {/* <FormGroup className="infor-item">
                   <Label for="exampleText">Đã chứa</Label>
                   <Input
                     type="number"
@@ -209,7 +209,7 @@ const ListParks = () => {
                     // value={staffData.staffName}
                     // disabled={disable}
                   />
-                </FormGroup>
+                </FormGroup> */}
                 <FormGroup className="infor-item">
                   <Label for="exampleText">Giá thuê bãi/ngày</Label>
                   <Input

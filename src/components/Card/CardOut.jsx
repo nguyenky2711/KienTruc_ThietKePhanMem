@@ -5,10 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getCardInforThunk,
   getCardListThunk,
+  getCostThunk,
   updateCardThunk,
 } from "../../store/action/action";
 import video from "../../../src/Download.mp4";
-
+import { parseISO, getHours } from "date-fns";
 const CardOut = () => {
   const [flag, setFlag] = useState(false);
   const dispatch = useDispatch();
@@ -16,17 +17,18 @@ const CardOut = () => {
     JSON.parse(sessionStorage.getItem("pocketbase_auth")) ||
     JSON.parse(localStorage.getItem("pocketbase_auth"));
   const [inputValue, setInputValue] = useState("");
-  const { cardList } = useSelector((state) => state.slice);
+  const { cardList, costList } = useSelector((state) => state.slice);
   useEffect(() => {
     dispatch(getCardListThunk());
+    dispatch(getCostThunk());
   }, [dispatch]);
   const formData = new FormData();
   const [newData, setNewData] = useState({});
   const getData = (e) => {
+    setFlag(true);
     handleGetInfo();
     const tempData = cardList.find((item) => item.id == inputValue);
     setNewData(tempData);
-    setFlag(true);
   };
   const videoRef = useRef(null);
   const imgRef = useRef(null);
@@ -56,6 +58,7 @@ const CardOut = () => {
       check_in_img: newData.check_in_img,
       check_out_img: imgRef.current.src,
       area_id: newData.area_id,
+      total_money: calculatePrice(),
     };
     dispatch(updateCardThunk([newData.id, data])).then((res) =>
       console.log(res)
@@ -81,6 +84,46 @@ const CardOut = () => {
       [name]: value,
     }));
   };
+  const handleMoney = () => {
+    // const hourStart = getHours(parseISO(newData.check_in));
+    // const hourtEnd = getHours(parseISO(newData.check_out));
+    // console.log(hourStart, hourtEnd);
+  };
+  function calculatePrice() {
+    const costArr = costList.filter(
+      (item) => item.transport_type == newData.transport_type
+    );
+    console.log();
+    const pricePerHourDay = costArr.find(
+      (item) => item.time == "06:00 - 18:00"
+    ).price; // Giá mỗi giờ từ 6:00 - 18:00 (UTC)
+    const pricePerHourNight = costArr.find(
+      (item) => item.time == "18:00 - 06:00"
+    ).price; // Giá mỗi giờ từ 18:00 - 6:00 (UTC)
+
+    const start = new Date(newData.check_in);
+    const end = new Date(newData.check_out);
+
+    let price = 0;
+
+    while (start < end) {
+      const currentHour = start.getUTCHours();
+      const nextHour = (currentHour + 1) % 24;
+
+      if (currentHour >= 6 && currentHour < 18) {
+        // Giờ trong khoảng từ 6:00 - 18:00 (UTC)
+        price += pricePerHourDay;
+      } else {
+        // Giờ trong khoảng từ 18:00 - 6:00 (UTC)
+        price += pricePerHourNight;
+      }
+
+      start.setUTCHours(nextHour);
+    }
+
+    return price;
+  }
+
   return (
     <div className="card-cover">
       <div className="card-left">
@@ -183,12 +226,23 @@ const CardOut = () => {
             </Form>
           ) : (
             <Form className="saveInfo">
+              <FormGroup style={{ display: "none" }}>
+                <Label for="exampleText">Loại xe</Label>
+                <Input
+                  type="text"
+                  name="transport_type"
+                  id="transport_type"
+                  disabled
+                  defaultValue={newData?.transport_type}
+                />
+              </FormGroup>
               <FormGroup>
                 <Label for="exampleText">Loại xe</Label>
                 <Input
                   type="text"
                   name="transport_type"
                   id="transport_type"
+                  disabled
                   defaultValue={newData?.transport_type}
                 />
               </FormGroup>
@@ -198,6 +252,7 @@ const CardOut = () => {
                   type="text"
                   name="license_car"
                   id="license_car"
+                  disabled
                   defaultValue={newData?.license_car}
                 />
               </FormGroup>
@@ -207,6 +262,7 @@ const CardOut = () => {
                   type="text"
                   name="card_id"
                   id="card_id"
+                  disabled
                   defaultValue={newData?.card_id}
                 />
               </FormGroup>
@@ -216,6 +272,7 @@ const CardOut = () => {
                   type="text"
                   name="check_in"
                   id="check_in"
+                  disabled
                   defaultValue={newData?.check_in}
                 />
               </FormGroup>
@@ -226,6 +283,18 @@ const CardOut = () => {
                   name="check_out"
                   id="check_out"
                   value={newData?.check_out}
+                  disabled
+                  onChange={handleChange}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label for="exampleText">Thành tiền</Label>
+                <Input
+                  type="number"
+                  name="total_money"
+                  id="total_money"
+                  value={calculatePrice()}
+                  disabled
                   onChange={handleChange}
                 />
               </FormGroup>

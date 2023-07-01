@@ -9,6 +9,14 @@ import EmployeeDetail from "./EmployeeDetail";
 import PocketBase from "pocketbase";
 import { useDispatch, useSelector } from "react-redux";
 import { createStaffThunk, getStaffThunk } from "../store/action/action";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
+import "moment/locale/vi"; // Import locale của Việt Nam hoặc locale tương ứng
+import { format, parseISO } from "date-fns";
+// ...
+
+moment.locale("vi");
 const pb = new PocketBase("https://aplonis-meln.alwaysdata.net");
 const authData = await pb
   .collection("users")
@@ -71,13 +79,18 @@ const AllEmployee = () => {
   ];
   const [newStaffData, setNewStaffData] = useState({
     role: "Nhân Vien",
-    username: "test_usernameahah",
-    email: "test273@example.com",
-    emailVisibility: true,
-    password: "12345678",
-    passwordConfirm: "12345678",
+    // username: "test_usernameahah",
+    // email: "test273@example.com",
+    // emailVisibility: true,
+    // password: "12345678",
+    // passwordConfirm: "12345678",
     status: "Đang làm việc",
     end_time: "",
+    name: "",
+    phone_number: "",
+    cccd: "",
+    address: "",
+    start_time: "",
   });
   const [id, setId] = useState(5);
   const [disable, setDisable] = useState(true);
@@ -95,7 +108,11 @@ const AllEmployee = () => {
   const handleAdd = () => {
     setAddForm(true);
   };
+  const [startDate, setStartDate] = useState(new Date());
 
+  const handleChangeStartDate = (date) => {
+    setStartDate(date);
+  };
   const handleChange = (event) => {
     const { name, value } = event.target;
     setNewStaffData((prevData) => ({
@@ -103,24 +120,10 @@ const AllEmployee = () => {
       // staffImg: `https://picsum.photos/id/${id}/65/65`,
       // id: id,
       [name]: value,
+      start_time: startDate,
     }));
   };
-  var data2 = {
-    username: `test_username${new Date().getTime()}`,
-    email: `test@example${new Date().getTime()}.com`,
-    emailVisibility: true,
-    password: "12345678",
-    passwordConfirm: "12345678",
-    name: "test",
-    status: "Đang làm việc",
-    phone_number: "test",
-    cccd: "test",
-    address: "test",
-    start_time: "2022-01-01 10:00:00.123Z",
-    end_time: "2022-01-01 10:00:00.123Z",
-    role: "Nhân Vien",
-    avatar: null,
-  };
+
   const create_staff = (newStaffData) => {
     // xử lý thêm
     const formData = new FormData();
@@ -130,23 +133,20 @@ const AllEmployee = () => {
     formData.append("emailVisibility", true);
     formData.append("password", "12345678");
     formData.append("passwordConfirm", "12345678");
-    formData.append("name", "test");
-    formData.append("status", "Đang làm việc");
-    formData.append("phone_number", "test");
-    formData.append("cccd", "test");
-    formData.append("address", "test");
-    formData.append("start_time", "2022-01-01 10:00:00.123Z");
-    formData.append("end_time", "2022-01-01 10:00:00.123Z");
-    formData.append("role", "Nhân Vien");
+    formData.append("name", newStaffData.name);
+    formData.append("status", newStaffData.status);
+    formData.append("phone_number", newStaffData.phone_number);
+    formData.append("cccd", newStaffData.cccd);
+    formData.append("address", newStaffData.address);
+    formData.append(
+      "start_time",
+      format(startDate, "yyyy-MM-dd HH:mm:ss.SSS'Z'")
+    );
+    formData.append("end_time", "");
+    formData.append("role", newStaffData.role);
     formData.append("avatar", file);
 
-    console.log(data2);
-    // dispatch(createStaffThunk([data2, userSessionStorage.token])).then(
     dispatch(createStaffThunk(formData)).then((res) => {
-      // console.log(res);
-      // dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
-      //   setAddForm(false);
-      // });
       dispatch(getStaffThunk()).then((res) => {
         setAddForm(false);
       });
@@ -163,26 +163,11 @@ const AllEmployee = () => {
   };
 
   const handleBackClick = () => {
-    // dispatch(getStaffThunk([userSessionStorage.token])).then((res) => {
-    //   setForm(false);
-    //   setData(listStaff);
-    // });
     dispatch(getStaffThunk()).then((res) => {
       setForm(false);
       setData(listStaff);
     });
   };
-
-  // const handleFileChange = (event) => {
-  //   const fileInput = event.target;
-  //   const files = fileInput.files;
-
-  //   for (let i = 0; i < files.length; i++) {
-  //     const file = files[i];
-  //     // formData.append('avatar', file);
-  //     console.log(file);
-  //   }
-  // };
   const handleFileChange = (event) => {
     const fileInput = event.target;
     const files = fileInput.files;
@@ -201,7 +186,7 @@ const AllEmployee = () => {
       //   avatar: temp_file,
       // }));
       setFile(files[0]);
-      data2.avatar = temp_file.name;
+      // data2.avatar = temp_file.name;
     }
   };
   console.log(file);
@@ -210,6 +195,17 @@ const AllEmployee = () => {
     setSelectedImage(null);
     document.getElementById("fileInput").click();
   };
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    const milliseconds = String(date.getMilliseconds()).padStart(3, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+  }
   return (
     <div className="container-list" style={{ flexBasis: "70%" }}>
       <SearchTitle title={"Quản lý nhân viên"} search={true} />
@@ -301,13 +297,14 @@ const AllEmployee = () => {
                 </FormGroup>
                 <FormGroup className="infor-item">
                   <Label for="exampleText">Ngày bắt đầu đi làm</Label>
-                  <Input
-                    type="text"
-                    name="start_time"
-                    id="exampleText"
-                    onChange={handleChange}
-                    // value={staffData.staffDayStart}
-                    // disabled={disable}
+                  <DatePicker
+                    selected={startDate}
+                    onChange={handleChangeStartDate}
+                    dateFormat="yyyy-MM-dd HH:mm:ss.SSS[Z]"
+                    value={moment(startDate).format(
+                      "yyyy-MM-dd HH:mm:ss.SSS[Z]"
+                    )}
+                    // minDate={new Date()}
                   />
                 </FormGroup>
                 <FormGroup className="infor-item">
@@ -329,7 +326,7 @@ const AllEmployee = () => {
                     id="exampleText"
                     onChange={handleChange}
                     // value={staffData.staffDayEnd}
-                    disabled={disable}
+                    disabled
                   />
                 </FormGroup>
                 <FormGroup className="infor-item">
@@ -340,7 +337,7 @@ const AllEmployee = () => {
                     id="exampleText"
                     onChange={handleChange}
                     value={"Nhân Vien"}
-                    // disabled={disable}
+                    disabled
                   />
                 </FormGroup>
               </Form>
@@ -349,7 +346,7 @@ const AllEmployee = () => {
                   type="button"
                   onClick={() => create_staff(newStaffData)}
                 >
-                  Thêm bãi xe
+                  Thêm nhân viên
                 </button>
               </div>
             </div>
